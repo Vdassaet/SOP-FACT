@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function PaymentsPage() {
   let payments: any[] = [];
@@ -15,11 +16,11 @@ export default async function PaymentsPage() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Pagos Recibidos</h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Received Payments</h1>
         <button 
           style={{ backgroundColor: '#2563eb', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '4px', border: 'none', fontWeight: '500', cursor: 'pointer' }}
         >
-          + Registrar Pago Manual
+          + Log Manual Payment
         </button>
       </div>
 
@@ -27,19 +28,20 @@ export default async function PaymentsPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
             <tr style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Fecha</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Cliente</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Factura Relacionada</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Método</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Monto</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Referencia</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Date</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Customer</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Related Invoice</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Method</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Amount</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Reference</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {payments.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
-                  No hay pagos registrados o DB no conectada.
+                <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                  No payments registered or DB not connected.
                 </td>
               </tr>
             ) : (
@@ -52,9 +54,12 @@ export default async function PaymentsPage() {
                       {pay.invoice?.number}
                     </Link>
                   </td>
-                  <td style={{ padding: '1rem', color: '#6b7280' }}>{pay.paymentMethod}</td>
+                  <td style={{ padding: '1rem', color: '#6b7280' }}>{pay.method}</td>
                   <td style={{ padding: '1rem', color: '#166534', fontWeight: '600' }}>+${pay.amount?.toString()}</td>
                   <td style={{ padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>{pay.reference || '-'}</td>
+                  <td style={{ padding: '1rem' }}>
+                    <DeleteButton id={pay.id} endpoint="payments" itemName="Payment" />
+                  </td>
                 </tr>
               ))
             )}

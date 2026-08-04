@@ -47,3 +47,50 @@ a {
     color-scheme: dark;
   }
 }
+
+.print-only {
+  display: none;
+}
+
+/* Print Styles */
+@media print {
+  @page {
+    margin: 0.5cm;
+  }
+  
+  .hide-on-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: flex !important;
+  }
+  
+  .print-block {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .print-main-content {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  .print-main-content-inner {
+    overflow: visible !important;
+    padding: 0 !important;
+    zoom: 0.85; /* Reduces size by 15% to help fit on one page */
+  }
+
+  /* Prevent page breaks inside important sections */
+  .print-block, table, tr, .print-block > div {
+    page-break-inside: avoid !important;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+    display: block !important;
+    height: auto !important;
+  }
+}

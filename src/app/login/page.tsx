@@ -45,7 +45,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '4px', outline: 'none' }}
-              placeholder="admin@njfence.com"
+              placeholder="njfenceandrailing@gmail.com"
             />
           </div>
           <div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
           </button>
         </form>
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <p style={{ fontSize: '0.75rem', color: '#6b7280' }}>Usa admin@njfence.com / admin para el demo.</p>
+          <p style={{ fontSize: '0.75rem', color: '#6b7280' }}>Usa njfenceandrailing@gmail.com / Contra2026 para iniciar sesión.</p>
         </div>
       </div>
     </div>

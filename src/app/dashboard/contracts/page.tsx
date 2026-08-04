@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function ContractsPage() {
   let contracts: any[] = [];
@@ -62,10 +63,11 @@ export default async function ContractsPage() {
                       {contract.status}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem' }}>
+                  <td style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <Link href={`/dashboard/contracts/${contract.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>
                       View PDF
                     </Link>
+                    <DeleteButton id={contract.id} endpoint="contracts" itemName="Contract" />
                   </td>
                 </tr>
               ))

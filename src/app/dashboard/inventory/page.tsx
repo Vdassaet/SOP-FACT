@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function InventoryPage() {
   let products: any[] = [];
@@ -14,12 +15,12 @@ export default async function InventoryPage() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Inventario y Materiales</h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Inventory & Materials</h1>
         <Link 
           href="/dashboard/inventory/new" 
           style={{ backgroundColor: '#2563eb', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '4px', textDecoration: 'none', fontWeight: '500' }}
         >
-          + Agregar Producto
+          + Add Product
         </Link>
       </div>
 
@@ -27,19 +28,20 @@ export default async function InventoryPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
             <tr style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Material / Producto</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Material / Product</th>
               <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>SKU</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Categoría</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Costo Unitario</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Stock Actual</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Estado</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Category</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Unit Cost</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Current Stock</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Status</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {products.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
-                  El inventario está vacío o la BD no está conectada.
+                <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                  Inventory is empty or DB not connected.
                 </td>
               </tr>
             ) : (
@@ -48,19 +50,22 @@ export default async function InventoryPage() {
                   <td style={{ padding: '1rem', color: '#111827', fontWeight: '500' }}>{prod.name}</td>
                   <td style={{ padding: '1rem', color: '#6b7280' }}>{prod.sku || '-'}</td>
                   <td style={{ padding: '1rem', color: '#6b7280' }}>{prod.category}</td>
-                  <td style={{ padding: '1rem', color: '#111827' }}>${prod.costPrice?.toString()}</td>
-                  <td style={{ padding: '1rem', color: '#111827', fontWeight: 'bold' }}>{prod.quantity}</td>
+                  <td style={{ padding: '1rem', color: '#111827' }}>${prod.cost?.toString()}</td>
+                  <td style={{ padding: '1rem', color: '#111827', fontWeight: 'bold' }}>{prod.stock}</td>
                   <td style={{ padding: '1rem' }}>
                     <span style={{ 
-                      backgroundColor: prod.quantity <= prod.minLevel ? '#fee2e2' : '#dcfce7', 
-                      color: prod.quantity <= prod.minLevel ? '#991b1b' : '#166534', 
+                      backgroundColor: prod.stock <= prod.minLevel ? '#fee2e2' : '#dcfce7', 
+                      color: prod.stock <= prod.minLevel ? '#991b1b' : '#166534', 
                       padding: '0.25rem 0.75rem', 
                       borderRadius: '9999px', 
                       fontSize: '0.75rem', 
                       fontWeight: '500' 
                     }}>
-                      {prod.quantity <= prod.minLevel ? 'Stock Bajo' : 'Normal'}
+                      {prod.stock <= prod.minLevel ? 'Low Stock' : 'Normal'}
                     </span>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <DeleteButton id={prod.id} endpoint="inventory" itemName="Product" />
                   </td>
                 </tr>
               ))

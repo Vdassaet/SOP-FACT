@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import DeleteButton from "@/components/DeleteButton";
 
 type Project = {
   id: string;
@@ -124,7 +125,10 @@ export default function ProjectsKanbanPage() {
                       gap: '0.5rem'
                     }}
                   >
-                    <div style={{ fontWeight: '600', color: '#111827' }}>{p.customer?.name}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ fontWeight: '600', color: '#111827' }}>{p.customer?.name}</div>
+                      <DeleteButton id={p.id} endpoint="projects" itemName="Project" onSuccess={() => setProjects(prev => prev.filter(proj => proj.id !== p.id))} />
+                    </div>
                     <div style={{ fontSize: '0.875rem', color: '#4b5563' }}>{p.address}</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
                       <span style={{ fontSize: '0.75rem', background: '#dbeafe', color: '#1d4ed8', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>

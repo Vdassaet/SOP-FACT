@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function InvoicesPage() {
   let invoices: any[] = [];
@@ -64,10 +65,11 @@ export default async function InvoicesPage() {
                       {inv.status}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem' }}>
+                  <td style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <Link href={`/dashboard/invoices/${inv.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>
                       View Details
                     </Link>
+                    <DeleteButton id={inv.id} endpoint="invoices" itemName="Invoice" />
                   </td>
                 </tr>
               ))

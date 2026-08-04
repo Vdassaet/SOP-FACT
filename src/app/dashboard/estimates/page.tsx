@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function EstimatesPage() {
   let estimates: any[] = [];
@@ -15,12 +16,12 @@ export default async function EstimatesPage() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Cotizaciones (Estimates)</h1>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Estimates</h1>
         <Link 
           href="/dashboard/estimates/new" 
           style={{ backgroundColor: '#2563eb', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '4px', textDecoration: 'none', fontWeight: '500' }}
         >
-          + Nueva Cotización
+          + New Estimate
         </Link>
       </div>
 
@@ -28,19 +29,19 @@ export default async function EstimatesPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
             <tr style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Cotización #</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Cliente</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Fecha</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Estimate #</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Customer</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Date</th>
               <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Total</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Estado</th>
-              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Acciones</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Status</th>
+              <th style={{ padding: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {estimates.length === 0 ? (
               <tr>
                 <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
-                  No hay cotizaciones o DB no conectada.
+                  No estimates or DB not connected.
                 </td>
               </tr>
             ) : (
@@ -62,10 +63,11 @@ export default async function EstimatesPage() {
                       {est.status}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem' }}>
-                    <Link href={`/dashboard/estimates/${est.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem', marginRight: '1rem' }}>
-                      Ver
+                  <td style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <Link href={`/dashboard/estimates/${est.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>
+                      View
                     </Link>
+                    <DeleteButton id={est.id} endpoint="estimates" itemName="Estimate" />
                   </td>
                 </tr>
               ))

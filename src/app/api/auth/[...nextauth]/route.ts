@@ -8,7 +8,7 @@ const handler = NextAuth({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "admin@njfence.com" },
+        email: { label: "Email", type: "email", placeholder: "njfenceandrailing@gmail.com" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
@@ -16,9 +16,8 @@ const handler = NextAuth({
           return null
         }
 
-        // FAKE MOCK FOR NOW SO IT WORKS SINCE WE HAVE NO REAL DB URL SETUP
-        if (credentials.email === "admin@njfence.com" && credentials.password === "admin") {
-          return { id: "1", name: "Admin User", email: "admin@njfence.com", role: "ADMIN" }
+        if (credentials.email === "njfenceandrailing@gmail.com" && credentials.password === "Contra2026") {
+          return { id: "1", name: "NJ FENCE AND RAILING", email: "njfenceandrailing@gmail.com", role: "ADMIN" }
         }
 
         try {

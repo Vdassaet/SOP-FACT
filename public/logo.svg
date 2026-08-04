@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="100%" height="100%">
+  <rect width="600" height="120" fill="#0b1320" />
+  
+  <!-- N -->
+  <text x="40" y="90" font-family="Arial, sans-serif" font-weight="900" font-size="100" font-style="italic" fill="#e0e0e0">N</text>
+  
+  <!-- J -->
+  <text x="120" y="90" font-family="Arial, sans-serif" font-weight="900" font-size="100" font-style="italic" fill="#c39d52">J</text>
+  
+  <!-- Divider / Graphic (Simplified Fence) -->
+  <path d="M 230 50 L 480 50 M 230 65 L 480 65 M 230 80 L 480 80" stroke="#c39d52" stroke-width="3" fill="none" />
+  <rect x="300" y="30" width="6" height="55" fill="#c39d52" />
+  <rect x="420" y="30" width="6" height="55" fill="#c39d52" />
+  
+  <!-- FENCE AND RAILING -->
+  <text x="230" y="105" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="#ffffff" letter-spacing="1">FENCE AND RAILING</text>
+</svg>

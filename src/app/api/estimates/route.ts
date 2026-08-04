@@ -80,3 +80,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Error creating estimate", details: error?.message }, { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const customerId = searchParams.get("customerId");
+
+    const whereClause = customerId ? { customerId } : {};
+
+    const estimates = await prisma.estimate.findMany({
+      where: whereClause,
+      include: {
+        items: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return NextResponse.json(estimates);
+  } catch (error: any) {
+    console.error("Error fetching estimates", error);
+    return NextResponse.json({ error: "Error fetching estimates", details: error?.message }, { status: 500 });
+  }
+}
