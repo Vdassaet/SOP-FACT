@@ -1,0 +1,289 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  String         String     @default("EMPLOYEE")
+  phone        String?
+  photoUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  company   String?
+  phone     String?
+  email     String?  @unique
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  estimates Estimate[]
+  invoices  Invoice[]
+  projects  Project[]
+  payments  Payment[]
+  contracts Contract[]
+}
+
+model Product {
+  id          String            @id @default(uuid())
+  name        String
+  description String?
+  sku         String?           @unique
+  category    String
+  supplier    String?
+  cost        Float             @default(0.0)
+  salePrice   Float             @default(0.0)
+  stock       Int               @default(0)
+  minLevel    Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  estimateItems EstimateItem[]
+  invoiceItems  InvoiceItem[]
+  movements     InventoryMovement[]
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float    @default(0.0)
+  category    String? // Vinyl, Aluminum, Wood, Installation, etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  estimateItems EstimateItem[]
+  invoiceItems  InvoiceItem[]
+}
+
+model Estimate {
+  id             String         @id @default(uuid())
+  number         String         @unique
+  customerId     String
+  customer       Customer       @relation(fields: [customerId], references: [id])
+  date           DateTime       @default(now())
+  expirationDate DateTime?
+  projectAddress String?
+  description    String?
+  propertyType   String?
+  projectType    String?
+  priority       String?
+  salespersonId  String?
+  estimatedInstallDate DateTime?
+  installAddress String?
+
+  laborCrewSize       Int?
+  laborEstimatedHours Float?
+  laborHourlyRate     Float?
+  machineryCost       Float?
+  permitCost          Float?
+  transportCost       Float?
+  disposalCost        Float?
+  overheadPercent     Float?
+
+  linearFeet          Float?
+  height              Float?
+  gateCount           Int?
+  gateWidth           Float?
+  linePosts           Int?
+  cornerPosts         Int?
+  terminalPosts       Int?
+
+  margin              Float?
+
+  status         String @default("DRAFT")
+  subtotal       Float          @default(0.0)
+  tax            Float          @default(0.0)
+  discount       Float          @default(0.0)
+  total          Float          @default(0.0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  items     EstimateItem[]
+  invoices  Invoice[]
+  contracts Contract[]
+  projects  Project[]
+}
+
+model EstimateItem {
+  id          String   @id @default(uuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id])
+  serviceId   String?
+  service     Service? @relation(fields: [serviceId], references: [id])
+  name        String
+  description String?
+  quantity    Int      @default(1)
+  unitPrice   Float    @default(0.0)
+  total       Float    @default(0.0)
+}
+
+model Invoice {
+  id         String        @id @default(uuid())
+  number     String        @unique
+  customerId String
+  customer   Customer      @relation(fields: [customerId], references: [id])
+  estimateId String?
+  estimate   Estimate?     @relation(fields: [estimateId], references: [id])
+  date       DateTime      @default(now())
+  dueDate    DateTime?
+  status     String @default("UNPAID")
+  subtotal   Float         @default(0.0)
+  tax        Float         @default(0.0)
+  discount   Float         @default(0.0)
+  total      Float         @default(0.0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  items    InvoiceItem[]
+  payments Payment[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id])
+  serviceId   String?
+  service     Service? @relation(fields: [serviceId], references: [id])
+  name        String
+  description String?
+  quantity    Int      @default(1)
+  unitPrice   Float    @default(0.0)
+  total       Float    @default(0.0)
+}
+
+model Payment {
+  id         String        @id @default(uuid())
+  invoiceId  String
+  invoice    Invoice       @relation(fields: [invoiceId], references: [id])
+  customerId String
+  customer   Customer      @relation(fields: [customerId], references: [id])
+  amount     Float
+  method     String
+  date       DateTime      @default(now())
+  reference  String?
+  notes      String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  customerId   String
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  address      String
+  jobType      String
+  startDate    DateTime?
+  estimatedEnd DateTime?
+  status       String @default("NEW_LEAD")
+  description  String?
+  notes        String?
+  assignedTeam String? // Could be a relation to User[] for workers
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  contracts Contract[]
+  estimateId String?
+  estimate   Estimate? @relation(fields: [estimateId], references: [id])
+}
+
+model Contract {
+  id         String         @id @default(uuid())
+  number     String         @unique
+  customerId String
+  customer   Customer       @relation(fields: [customerId], references: [id])
+  projectId  String?
+  project    Project?       @relation(fields: [projectId], references: [id])
+  estimateId String?
+  estimate   Estimate?      @relation(fields: [estimateId], references: [id])
+  status     String @default("DRAFT")
+  startDate  DateTime?
+  endDate    DateTime?
+
+  // Clauses
+  warranty          String?
+  responsibilities  String?
+  paymentConditions String?
+  cancellations     String?
+  permits           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signature Signature?
+}
+
+model Signature {
+  id         String   @id @default(uuid())
+  contractId String   @unique
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  signerName String
+  ipAddress  String?
+  signedAt   DateTime @default(now())
+}
+
+model InventoryMovement {
+  id        String       @id @default(uuid())
+  productId String
+  product   Product      @relation(fields: [productId], references: [id])
+  type      String
+  quantity  Int
+  notes     String?
+  createdAt DateTime     @default(now())
+}
+
+model CompanyConfig {
+  id               String   @id @default("1")
+  name             String   @default("NJ FENCE AND RAILING")
+  logoUrl          String?
+  address          String?
+  phone            String?
+  email            String?
+  website          String?
+  taxRate          Float    @default(0.0)
+  currency         String   @default("USD")
+  acceptedPayments String? // JSON or comma separated
+  invoiceMessage   String?
+  quoteMessage     String?
+  contractMessage  String?
+  updatedAt        DateTime @updatedAt
+}
