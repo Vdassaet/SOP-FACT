@@ -30,11 +30,12 @@ export default function NewCustomerPage() {
         router.push("/dashboard/crm");
         router.refresh();
       } else {
-        alert("Error al guardar cliente");
+        const errorData = await res.json().catch(() => ({}));
+        alert(`Error: ${errorData.details || errorData.error || "Error al guardar cliente"}`);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Error de conexión");
+      alert(`Error de conexión: ${e.message}`);
     } finally {
       setLoading(false);
     }
