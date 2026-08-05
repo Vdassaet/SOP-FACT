@@ -17,6 +17,7 @@ export default withAuth(
     }
   },
   {
+    secret: process.env.NEXTAUTH_SECRET || "my_super_secret_key_for_development_123",
     callbacks: {
       authorized: ({ token, req }) => {
         const path = req.nextUrl.pathname;
