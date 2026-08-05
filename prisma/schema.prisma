@@ -30,7 +30,7 @@ model User {
   name         String
   email        String   @unique
   passwordHash String
-  String         String     @default("EMPLOYEE")
+  role         String   @default("EMPLOYEE")
   phone        String?
   photoUrl     String?
   createdAt    DateTime @default(now())

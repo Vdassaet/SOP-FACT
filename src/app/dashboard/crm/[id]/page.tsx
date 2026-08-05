@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ConvertToInvoiceButton from "@/components/ConvertToInvoiceButton";
 
 export default async function CustomerProfilePage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -84,6 +85,7 @@ export default async function CustomerProfilePage(props: { params: Promise<{ id:
                     <th style={{ padding: '0.5rem 0', color: '#6b7280', fontSize: '0.875rem' }}>Date</th>
                     <th style={{ padding: '0.5rem 0', color: '#6b7280', fontSize: '0.875rem' }}>Total</th>
                     <th style={{ padding: '0.5rem 0', color: '#6b7280', fontSize: '0.875rem' }}>Status</th>
+                    <th style={{ padding: '0.5rem 0', color: '#6b7280', fontSize: '0.875rem' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -96,6 +98,11 @@ export default async function CustomerProfilePage(props: { params: Promise<{ id:
                         <span style={{ backgroundColor: '#dbeafe', color: '#1e40af', padding: '0.25rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '500' }}>
                           {est.status}
                         </span>
+                      </td>
+                      <td style={{ padding: '0.75rem 0' }}>
+                        {est.status !== 'INVOICED' && (
+                          <ConvertToInvoiceButton estimateId={est.id} />
+                        )}
                       </td>
                     </tr>
                   ))}
