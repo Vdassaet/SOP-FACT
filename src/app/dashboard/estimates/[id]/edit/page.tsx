@@ -279,7 +279,7 @@ export default function EditEstimatePage() {
         {/* 1. Cliente */}
         <section style={cardStyle}>
           <h2 style={sectionTitle}>Customer Information</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="grid-responsive" style={{ gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Select Customer *</label>
               <select required value={formData.customerId} onChange={(e) => setFormData({...formData, customerId: e.target.value})} style={inputStyle}>
@@ -475,7 +475,7 @@ export default function EditEstimatePage() {
         </div>
         
         <div style={{ display: 'flex', gap: '4rem', marginBottom: '2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem', fontSize: '0.875rem' }}>
+          <div className="grid-responsive" style={{ gap: '2rem', marginBottom: '2rem', fontSize: '0.875rem' }}>
             <div>
               <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
               {(() => {

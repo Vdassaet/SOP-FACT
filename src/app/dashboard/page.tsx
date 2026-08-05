@@ -72,26 +72,28 @@ export default async function DashboardPage() {
         {customerTotals.length === 0 ? (
           <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem 0' }}>No payments registered yet.</p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151' }}>Customer</th>
-                <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151' }}>Company</th>
-                <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151', textAlign: 'right' }}>Total Paid</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customerTotals.map((c) => (
-                <tr key={c.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                  <td style={{ padding: '0.75rem', color: '#111827', fontWeight: '500' }}>{c.name}</td>
-                  <td style={{ padding: '0.75rem', color: '#6b7280' }}>{c.company || '-'}</td>
-                  <td style={{ padding: '0.75rem', color: '#10b981', fontWeight: 'bold', textAlign: 'right' }}>
-                    {formatCurrency(c.totalPaid)}
-                  </td>
+          <div className="table-responsive">
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151' }}>Customer</th>
+                  <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151' }}>Company</th>
+                  <th style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#374151', textAlign: 'right' }}>Total Paid</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {customerTotals.map((c) => (
+                  <tr key={c.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <td style={{ padding: '0.75rem', color: '#111827', fontWeight: '500' }}>{c.name}</td>
+                    <td style={{ padding: '0.75rem', color: '#6b7280' }}>{c.company || '-'}</td>
+                    <td style={{ padding: '0.75rem', color: '#10b981', fontWeight: 'bold', textAlign: 'right' }}>
+                      {formatCurrency(c.totalPaid)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

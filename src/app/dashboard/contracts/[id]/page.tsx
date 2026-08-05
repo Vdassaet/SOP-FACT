@@ -86,7 +86,7 @@ export default function ContractDetailPage() {
         {/* Customer Info */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Client Information</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="grid-responsive" style={{ gap: '1rem' }}>
             <div>
               <p style={{ margin: '0 0 0.25rem 0' }}><strong>Name:</strong> {contract.customer.name}</p>
               {contract.customer.company && <p style={{ margin: '0 0 0.25rem 0' }}><strong>Company:</strong> {contract.customer.company}</p>}
@@ -102,7 +102,7 @@ export default function ContractDetailPage() {
         {/* Schedule Info */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Project Schedule</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="grid-responsive" style={{ gap: '1rem' }}>
             <p style={{ margin: 0 }}><strong>Estimated Start Date:</strong> {contract.startDate ? new Date(contract.startDate).toLocaleDateString() : 'TBD'}</p>
             <p style={{ margin: 0 }}><strong>Estimated End Date:</strong> {contract.endDate ? new Date(contract.endDate).toLocaleDateString() : 'TBD'}</p>
           </div>

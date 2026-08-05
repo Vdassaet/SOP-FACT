@@ -73,7 +73,7 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           {/* Info Card */}
           <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Customer Information</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-responsive" style={{ gap: '1rem' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Customer</p>
                 <p style={{ margin: '0.25rem 0 1rem 0' }}>{invoice.customer?.name} {invoice.customer?.company ? `(${invoice.customer.company})` : ''}</p>
