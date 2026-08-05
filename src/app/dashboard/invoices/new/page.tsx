@@ -291,17 +291,35 @@ export default function NewInvoicePage() {
             
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', alignItems: 'center' }}>
               <span style={{ color: '#4b5563', fontSize: '0.875rem' }}>Deposit / Paid:</span>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.25rem' }}>$</span>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  min="0"
-                  max={total}
-                  value={depositAmount} 
-                  onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)} 
-                  style={{ width: '80px', padding: '0.25rem', textAlign: 'right', border: '1px solid #d1d5db', borderRadius: '4px' }} 
-                />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setDepositAmount(total)}
+                  style={{
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.75rem',
+                    backgroundColor: '#e0e7ff',
+                    color: '#4338ca',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontWeight: '500'
+                  }}
+                >
+                  Paid in Full
+                </button>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.25rem' }}>$</span>
+                  <input 
+                    type="number" 
+                    step="0.01" 
+                    min="0"
+                    max={total}
+                    value={depositAmount} 
+                    onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)} 
+                    style={{ width: '80px', padding: '0.25rem', textAlign: 'right', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+                  />
+                </div>
               </div>
             </div>
 

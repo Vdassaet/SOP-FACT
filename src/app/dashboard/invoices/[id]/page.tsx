@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PrintButton from "./PrintButton";
+import AddPaymentButton from "@/components/AddPaymentButton";
 
 export default async function InvoiceDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -60,6 +61,7 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           </span>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
+          <AddPaymentButton invoiceId={invoice.id} balanceDue={balanceDue} />
           <PrintButton />
         </div>
       </div>
