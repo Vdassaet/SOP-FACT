@@ -14,12 +14,14 @@ export default function NewInvoicePage() {
   const router = useRouter();
   const [customers, setCustomers] = useState<any[]>([]);
   const [estimates, setEstimates] = useState<any[]>([]);
+  const [unpaidInvoices, setUnpaidInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     customerId: "",
     dueDate: "",
   });
   const [selectedEstimateId, setSelectedEstimateId] = useState("");
+  const [selectedUnpaidInvoiceId, setSelectedUnpaidInvoiceId] = useState("");
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState("Transfer");
 
@@ -45,9 +47,20 @@ export default function NewInvoicePage() {
           }
         })
         .catch(err => console.error(err));
+
+      fetch(`/api/invoices?customerId=${formData.customerId}&status=UNPAID_OR_PARTIAL`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setUnpaidInvoices(data);
+          }
+        })
+        .catch(err => console.error(err));
     } else {
       setEstimates([]);
       setSelectedEstimateId("");
+      setUnpaidInvoices([]);
+      setSelectedUnpaidInvoiceId("");
     }
   }, [formData.customerId]);
 
@@ -63,6 +76,24 @@ export default function NewInvoicePage() {
           quantity: i.quantity,
           unitPrice: i.unitPrice
         })));
+      }
+    }
+  };
+
+  const handlePendingBalanceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const invId = e.target.value;
+    setSelectedUnpaidInvoiceId(invId);
+    if (invId) {
+      const inv = unpaidInvoices.find(i => i.id === invId);
+      if (inv) {
+        const paid = inv.payments?.reduce((acc: number, p: any) => acc + p.amount, 0) || 0;
+        const balance = Math.max(0, inv.total - paid);
+        setItems([{
+          name: `Saldo pendiente - Factura ${inv.number}`,
+          description: `Remaining balance for invoice ${inv.number}`,
+          quantity: 1,
+          unitPrice: balance
+        }]);
       }
     }
   };
@@ -167,6 +198,26 @@ export default function NewInvoicePage() {
                 {estimates.map(e => (
                   <option key={e.id} value={e.id}>{e.number} - ${e.total?.toFixed(2)} - {new Date(e.date).toLocaleDateString()}</option>
                 ))}
+              </select>
+            </div>
+          )}
+
+          {unpaidInvoices.length > 0 && (
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Based on Pending Balance (Optional)</label>
+              <select 
+                value={selectedUnpaidInvoiceId}
+                onChange={handlePendingBalanceChange}
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }}
+              >
+                <option value="">-- Select a Pending Balance --</option>
+                {unpaidInvoices.map(inv => {
+                  const paid = inv.payments?.reduce((acc: number, p: any) => acc + p.amount, 0) || 0;
+                  const balance = Math.max(0, inv.total - paid);
+                  return (
+                    <option key={inv.id} value={inv.id}>{inv.number} - Pending: ${balance.toFixed(2)}</option>
+                  )
+                })}
               </select>
             </div>
           )}
