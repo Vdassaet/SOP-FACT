@@ -119,6 +119,18 @@ a {
   gap: 1.5rem;
 }
 
+.grid-responsive-1-2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+.grid-responsive-2-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
 .mobile-menu-btn {
   display: none;
   background: none;
@@ -166,7 +178,7 @@ a {
     display: block;
   }
 
-  .grid-responsive {
+  .grid-responsive, .grid-responsive-1-2, .grid-responsive-2-1 {
     grid-template-columns: 1fr;
   }
   

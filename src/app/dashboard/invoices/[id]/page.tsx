@@ -65,7 +65,7 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
       </div>
 
       {/* Main Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }} className="print-block">
+      <div className="grid-responsive-2-1 print-block" style={{ gap: '2rem' }}>
         
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -94,7 +94,8 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           {/* Items Card */}
           <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Line Items</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
                   <th style={{ textAlign: 'left', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Item / Description</th>
@@ -121,7 +122,8 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
                   </tr>
                 )}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
 
         </div>

@@ -46,7 +46,7 @@ export default async function CustomerProfilePage(props: { params: Promise<{ id:
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem' }}>
+      <div className="grid-responsive-1-2" style={{ gap: '2rem' }}>
         {/* Info lateral */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
@@ -78,6 +78,7 @@ export default async function CustomerProfilePage(props: { params: Promise<{ id:
             {customer.estimates.length === 0 ? (
               <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>No estimates for this customer.</p>
             ) : (
+            <div className="table-responsive">
               <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
@@ -108,6 +109,7 @@ export default async function CustomerProfilePage(props: { params: Promise<{ id:
                   ))}
                 </tbody>
               </table>
+            </div>
             )}
           </div>
 

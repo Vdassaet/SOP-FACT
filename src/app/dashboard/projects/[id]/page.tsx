@@ -135,7 +135,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem' }}>
+      <div className="grid-responsive-1-2" style={{ gap: '2rem' }}>
         
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -202,7 +202,8 @@ export default function ProjectDetailPage() {
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Material Checklist (From Estimate)</h2>
             
             {project.estimate && project.estimate.items && project.estimate.items.length > 0 ? (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <div className="table-responsive">
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid #e5e7eb', textAlign: 'left' }}>
                     <th style={{ padding: '0.75rem 0', color: '#6b7280' }}>Load?</th>
@@ -223,7 +224,8 @@ export default function ProjectDetailPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             ) : (
               <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280', background: '#f9fafb', borderRadius: '6px' }}>
                 No materials found. This project might not be linked to an estimate.
