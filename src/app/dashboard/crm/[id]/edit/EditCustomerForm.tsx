@@ -29,11 +29,11 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
         router.push(`/dashboard/crm/${customer.id}`);
         router.refresh();
       } else {
-        alert("Error al actualizar cliente");
+        alert("Error updating customer");
       }
     } catch (e) {
       console.error(e);
-      alert("Error de conexión");
+      alert("Connection error");
     } finally {
       setLoading(false);
     }
@@ -45,13 +45,13 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>Editar Perfil de {customer.name}</h1>
+      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>Edit Profile for {customer.name}</h1>
       
       <form onSubmit={handleSubmit} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <div className="grid-responsive" style={{ gap: '1.5rem' }}>
           
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Nombre Completo *</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Full Name *</label>
             <input 
               type="text" 
               name="name"
@@ -75,7 +75,7 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Teléfono</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Phone</label>
             <input 
               type="tel" 
               name="phone"
@@ -86,7 +86,7 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Empresa (Opcional)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Company (Optional)</label>
             <input 
               type="text" 
               name="company"
@@ -97,7 +97,7 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Dirección Principal</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Primary Address</label>
             <textarea 
               name="address"
               value={formData.address}
@@ -115,14 +115,14 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
             onClick={() => router.back()}
             style={{ padding: '0.75rem 1.5rem', backgroundColor: 'transparent', border: '1px solid #d1d5db', borderRadius: '4px', color: '#374151', cursor: 'pointer', fontWeight: '500' }}
           >
-            Cancelar
+            Cancel
           </button>
           <button 
             type="submit" 
             disabled={loading}
             style={{ padding: '0.75rem 1.5rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: loading ? 'not-allowed' : 'pointer', fontWeight: '500' }}
           >
-            {loading ? 'Guardando...' : 'Actualizar Cliente'}
+            {loading ? 'Saving...' : 'Update Customer'}
           </button>
         </div>
       </form>

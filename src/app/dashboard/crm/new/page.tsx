@@ -31,11 +31,11 @@ export default function NewCustomerPage() {
         router.refresh();
       } else {
         const errorData = await res.json().catch(() => ({}));
-        alert(`Error: ${errorData.details || errorData.error || "Error al guardar cliente"}`);
+        alert(`Error: ${errorData.details || errorData.error || "Error saving customer"}`);
       }
     } catch (e: any) {
       console.error(e);
-      alert(`Error de conexión: ${e.message}`);
+      alert(`Connection error: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -47,13 +47,13 @@ export default function NewCustomerPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>Registrar Nuevo Cliente</h1>
+      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>Register New Customer</h1>
       
       <form onSubmit={handleSubmit} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <div className="grid-responsive">
           
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Nombre Completo *</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Full Name *</label>
             <input 
               type="text" 
               name="name"
@@ -61,7 +61,7 @@ export default function NewCustomerPage() {
               value={formData.name}
               onChange={handleChange}
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }}
-              placeholder="Ej. Juan Pérez"
+              placeholder="e.g. John Doe"
             />
           </div>
 
@@ -74,12 +74,12 @@ export default function NewCustomerPage() {
               value={formData.email}
               onChange={handleChange}
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }}
-              placeholder="juan@ejemplo.com"
+              placeholder="john@example.com"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Teléfono</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Phone</label>
             <input 
               type="tel" 
               name="phone"
@@ -91,26 +91,26 @@ export default function NewCustomerPage() {
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Empresa (Opcional)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Company (Optional)</label>
             <input 
               type="text" 
               name="company"
               value={formData.company}
               onChange={handleChange}
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }}
-              placeholder="Nombre de la empresa"
+              placeholder="Company Name"
             />
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Dirección Principal</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Primary Address</label>
             <textarea 
               name="address"
               value={formData.address}
               onChange={handleChange}
               rows={3}
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px', resize: 'vertical' }}
-              placeholder="Calle, Ciudad, Estado, Zip"
+              placeholder="Street, City, State, Zip"
             />
           </div>
 
@@ -122,14 +122,14 @@ export default function NewCustomerPage() {
             onClick={() => router.back()}
             style={{ padding: '0.75rem 1.5rem', backgroundColor: 'transparent', border: '1px solid #d1d5db', borderRadius: '4px', color: '#374151', cursor: 'pointer', fontWeight: '500' }}
           >
-            Cancelar
+            Cancel
           </button>
           <button 
             type="submit" 
             disabled={loading}
             style={{ padding: '0.75rem 1.5rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: loading ? 'not-allowed' : 'pointer', fontWeight: '500' }}
           >
-            {loading ? 'Guardando...' : 'Guardar Cliente'}
+            {loading ? 'Saving...' : 'Save Customer'}
           </button>
         </div>
       </form>
