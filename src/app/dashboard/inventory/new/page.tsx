@@ -47,12 +47,12 @@ export default function NewProductPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem' }}>Agregar Material a Inventario</h1>
+      <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem' }}>Add Material to Inventory</h1>
       
       <form onSubmit={handleSubmit} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <div className="grid-responsive" style={{ gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Nombre del Material / Producto</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Material / Product Name</label>
             <input 
               required
               type="text"
@@ -62,7 +62,7 @@ export default function NewProductPage() {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Código SKU</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>SKU Code</label>
             <input 
               type="text"
               value={formData.sku}
@@ -74,7 +74,7 @@ export default function NewProductPage() {
 
         <div className="grid-responsive" style={{ gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Categoría</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Category</label>
             <select 
               value={formData.category}
               onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -84,7 +84,7 @@ export default function NewProductPage() {
             </select>
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Proveedor (Opcional)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Supplier (Optional)</label>
             <input 
               type="text"
               value={formData.supplier}
@@ -96,7 +96,7 @@ export default function NewProductPage() {
 
         <div className="grid-responsive" style={{ gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Costo (USD)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Cost (USD)</label>
             <input 
               required
               type="number"
@@ -107,7 +107,7 @@ export default function NewProductPage() {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Precio Venta Sugerido (USD)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Suggested Retail Price (USD)</label>
             <input 
               required
               type="number"
@@ -121,7 +121,7 @@ export default function NewProductPage() {
 
         <div className="grid-responsive" style={{ gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Stock Inicial</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Initial Stock</label>
             <input 
               required
               type="number"
@@ -131,7 +131,7 @@ export default function NewProductPage() {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Nivel Mínimo (Alerta)</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Minimum Level (Alert)</label>
             <input 
               required
               type="number"
@@ -147,14 +147,14 @@ export default function NewProductPage() {
             href="/dashboard/inventory"
             style={{ padding: '0.75rem 1.5rem', backgroundColor: 'white', border: '1px solid #d1d5db', borderRadius: '0.375rem', fontWeight: '500', textDecoration: 'none', color: 'black' }}
           >
-            Cancelar
+            Cancel
           </Link>
           <button 
             type="submit" 
             disabled={loading}
             style={{ padding: '0.75rem 1.5rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '0.375rem', fontWeight: '500', cursor: loading ? 'not-allowed' : 'pointer' }}
           >
-            {loading ? 'Guardando...' : 'Guardar Material'}
+            {loading ? 'Saving...' : 'Save Material'}
           </button>
         </div>
       </form>
