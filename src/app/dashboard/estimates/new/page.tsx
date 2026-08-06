@@ -217,7 +217,11 @@ export default function NewEstimatePage() {
   const handleGeneratePDF = () => {
     setIsPdfGenerating(true);
     setTimeout(() => {
-      window.print();
+      if (typeof window !== 'undefined' && navigator.userAgent.includes('Electron')) {
+        window.postMessage({ type: 'electron-print' }, '*');
+      } else {
+        window.print();
+      }
       setIsPdfGenerating(false);
     }, 500);
   };
