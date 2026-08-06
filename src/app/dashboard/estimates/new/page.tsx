@@ -217,8 +217,8 @@ export default function NewEstimatePage() {
   const handleGeneratePDF = () => {
     setIsPdfGenerating(true);
     setTimeout(() => {
-      if (typeof window !== 'undefined' && navigator.userAgent.includes('Electron')) {
-        window.postMessage({ type: 'electron-print' }, '*');
+      if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
+        (window as any).electronAPI.printPDF();
       } else {
         window.print();
       }

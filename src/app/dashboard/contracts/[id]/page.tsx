@@ -49,8 +49,8 @@ export default function ContractDetailPage() {
   if (!contract) return <div style={{ padding: '2rem' }}>Contract Not Found</div>;
 
   const handlePrint = () => {
-    if (typeof window !== 'undefined' && navigator.userAgent.includes('Electron')) {
-      window.postMessage({ type: 'electron-print' }, '*');
+    if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
+      (window as any).electronAPI.printPDF();
     } else {
       window.print();
     }
