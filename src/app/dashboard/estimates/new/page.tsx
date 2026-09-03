@@ -422,7 +422,7 @@ export default function NewEstimatePage() {
 
       {/* HIDDEN PRINT TEMPLATE */}
       <div id="printable-pdf" style={{ display: isPdfGenerating ? 'block' : 'none', background: 'white', padding: '2rem', color: 'black' }}>
-        <img src="/logo-watermark.jpg" alt="" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+        <img src="/logo-watermark.jpg" alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
           <div>
