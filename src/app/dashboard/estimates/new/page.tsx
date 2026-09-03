@@ -373,7 +373,7 @@ export default function NewEstimatePage() {
           {lineItems.map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
               <input type="text" value={item.name} onChange={(e) => updateLineItem(i, 'name', e.target.value)} placeholder="Item" style={{...inputStyle, flex: 2}} />
-              <input type="number" value={item.quantity} onChange={(e) => updateLineItem(i, 'quantity', e.target.value)} placeholder="Qty" style={{...inputStyle, width: '80px'}} />
+              <input type="number" value={item.quantity} onChange={(e) => updateLineItem(i, 'quantity', e.target.value)} placeholder="Qty (FT)" style={{...inputStyle, width: '80px'}} />
               <input type="number" value={item.unitPrice} onChange={(e) => updateLineItem(i, 'unitPrice', e.target.value)} placeholder="Price" style={{...inputStyle, width: '100px'}} />
               <button type="button" onClick={() => removeLineItem(i)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>✖</button>
             </div>
@@ -474,7 +474,7 @@ export default function NewEstimatePage() {
           <thead>
             <tr style={{ background: '#f3f4f6' }}>
               <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #d1d5db' }}>Description</th>
-              <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '2px solid #d1d5db' }}>Qty</th>
+              <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '2px solid #d1d5db' }}>Qty (FT)</th>
               <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '2px solid #d1d5db' }}>Amount</th>
             </tr>
           </thead>
