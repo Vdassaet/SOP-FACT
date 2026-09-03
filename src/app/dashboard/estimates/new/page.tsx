@@ -498,7 +498,7 @@ export default function NewEstimatePage() {
 
         <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: '2rem', fontSize: '0.875rem' }}>
           <strong>Terms & Conditions:</strong>
-          <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days. 50% deposit required to schedule installation. Final payment due upon completion. Dig Safe will be notified before any excavation. We are not responsible for private underground utilities (sprinklers, invisible fences, etc) unless explicitly marked by the owner.</p>
+          <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
         </div>
 
         <div style={{ display: 'flex', gap: '4rem' }}>
