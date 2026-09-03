@@ -73,6 +73,8 @@ export default function ContractDetailPage() {
 
       {/* Printable Document Area */}
       <div style={{ backgroundColor: 'white', padding: '3rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+        <img src="/logo-watermark.jpg" alt="" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
         
         {/* Document Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #e5e7eb', paddingBottom: '2rem', marginBottom: '2rem' }}>
@@ -156,6 +158,7 @@ export default function ContractDetailPage() {
           </div>
         </div>
 
+        </div>
       </div>
 
       <style jsx global>{`
