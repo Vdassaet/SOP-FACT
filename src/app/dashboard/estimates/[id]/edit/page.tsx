@@ -466,7 +466,9 @@ export default function EditEstimatePage() {
       `}} />
 
       {/* HIDDEN PRINT TEMPLATE */}
-      <div id="printable-pdf" style={{ display: isPdfGenerating ? 'block' : 'none', background: 'white', padding: '2rem', color: 'black' }}>
+      <div id="printable-pdf" style={{ display: isPdfGenerating ? 'block' : 'none', background: 'white', padding: '2rem', color: 'black', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '10%', left: '10%', right: '10%', bottom: '10%', backgroundImage: 'url("/logo-watermark.jpg")', backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
           <div>
             <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>NJ FENCE & RAILING</h1>
@@ -546,14 +548,6 @@ export default function EditEstimatePage() {
           <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '4rem' }}>
-          <div style={{ flex: 1, borderTop: '1px solid black', paddingTop: '0.5rem' }}>
-            <strong>Authorized Signature (NJ Fence)</strong>
-          </div>
-          <div style={{ flex: 1, borderTop: '1px solid black', paddingTop: '0.5rem' }}>
-            <strong>Customer Acceptance Signature</strong><br/>
-            <span style={{ fontSize: '0.75rem', color: 'gray' }}>Date: _______________</span>
-          </div>
         </div>
       </div>
 
