@@ -54,6 +54,16 @@ a {
     position: static !important;
   }
 
+  /* Force grid containers to block in print to prevent iOS blank page bug */
+  .grid-responsive, .grid-responsive-1-2, .grid-responsive-2-1 {
+    display: block !important;
+  }
+  .grid-responsive > div, .grid-responsive-1-2 > div, .grid-responsive-2-1 > div {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 1.5rem !important;
+  }
+
   @page {
     margin: 0.5cm;
   }
@@ -87,7 +97,7 @@ a {
 
   /* Prevent page breaks inside important sections */
   .print-block, table, tr, .print-block > div {
-    page-break-inside: avoid !important;
+    /* page-break-inside: avoid !important; */
   }
 
   body {
