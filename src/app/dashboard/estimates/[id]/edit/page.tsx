@@ -458,6 +458,11 @@ export default function EditEstimatePage() {
       {/* PRINT STYLES */}
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
+          html, body {
+            color-scheme: light !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
           body * { visibility: hidden; }
           #printable-pdf, #printable-pdf * { visibility: visible; }
           #printable-pdf { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }

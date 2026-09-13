@@ -54,6 +54,14 @@ a {
 
 /* Print Styles */
 @media print {
+  html, body {
+    color-scheme: light !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+    color: black !important;
+  }
+
   @page {
     margin: 0.5cm;
   }

@@ -163,10 +163,14 @@ export default function ContractDetailPage() {
 
       <style jsx global>{`
         @media print {
-          body {
+          html, body {
+            color-scheme: light !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
             background-color: white !important;
             margin: 0 !important;
             padding: 0 !important;
+            color: black !important;
           }
           /* Hide Sidebar and Header from dashboard layout */
           aside, header, .print-hide {
