@@ -35,8 +35,8 @@ a {
   text-decoration: none;
 }
 
-.print-only {
-  display: none;
+.print-only, .print-only-block {
+  display: none !important;
 }
 
 /* Print Styles */
@@ -74,6 +74,10 @@ a {
   
   .print-only {
     display: flex !important;
+  }
+
+  .print-only-block {
+    display: block !important;
   }
   
   .print-block {

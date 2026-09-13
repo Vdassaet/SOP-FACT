@@ -260,22 +260,18 @@ export default function EditEstimatePage() {
 
   // Fake print for PDF
   const handleGeneratePDF = () => {
-    setIsPdfGenerating(true);
-    setTimeout(() => {
-      if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
-        (window as any).electronAPI.printPDF();
-      } else {
-        window.print();
-      }
-      setIsPdfGenerating(false);
-    }, 500);
+    if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
+      (window as any).electronAPI.printPDF();
+    } else {
+      window.print();
+    }
   };
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
       
       {/* LEFT COLUMN - FORM */}
-      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem' }} className={isPdfGenerating ? 'hide-on-print' : ''}>
+      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem' }} className="hide-on-print">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Edit Estimate</h1>
         </div>
@@ -428,7 +424,7 @@ export default function EditEstimatePage() {
       </div>
 
       {/* RIGHT COLUMN - STICKY SUMMARY */}
-      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className={isPdfGenerating ? 'hide-on-print' : ''}>
+      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className="hide-on-print">
         <div style={{ ...cardStyle, background: '#111827', color: 'white' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: 'white' }}>Billing Summary</h2>
           
@@ -463,13 +459,12 @@ export default function EditEstimatePage() {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          #printable-pdf { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
           .hide-on-print { display: none !important; }
         }
       `}} />
 
       {/* HIDDEN PRINT TEMPLATE */}
-      <div id="printable-pdf" style={{ display: isPdfGenerating ? 'block' : 'none', background: 'white', padding: '2rem', color: 'black' }}>
+      <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'absolute', left: 0, top: 0, width: '100%' }}>
         <img src="/logo-watermark.jpg" alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
