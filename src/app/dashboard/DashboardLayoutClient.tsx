@@ -19,7 +19,7 @@ export default function DashboardLayoutClient({
   const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
+    <div className="print-root" style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
       
       {/* Mobile Overlay */}
       <div 

@@ -3,13 +3,6 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 html {
   height: 100%;
 }
@@ -42,24 +35,23 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
 .print-only {
   display: none;
 }
 
 /* Print Styles */
 @media print {
-  html, body {
+  html, body, .print-root {
     color-scheme: light !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     background-color: white !important;
     color: black !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    position: static !important;
   }
 
   @page {
@@ -82,12 +74,15 @@ a {
   .print-main-content {
     overflow: visible !important;
     height: auto !important;
+    display: block !important;
+    position: static !important;
   }
 
   .print-main-content-inner {
     overflow: visible !important;
     padding: 0 !important;
-    zoom: 0.85; /* Reduces size by 15% to help fit on one page */
+    display: block !important;
+    position: static !important;
   }
 
   /* Prevent page breaks inside important sections */
