@@ -377,15 +377,15 @@ export default function EditEstimatePage() {
         <section style={cardStyle}>
           <h2 style={sectionTitle}>Project Measurements</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-            <div><label style={labelStyle}>Linear Feet</label><input type="number" value={measurements.linearFeet || ""} onChange={(e) => handleMeasurementChange('linearFeet', e.target.value)} style={inputStyle} /></div>
-            <div><label style={labelStyle}>Price per Linear Foot ($)</label><input type="number" value={measurements.pricePerLinearFoot || ""} onChange={(e) => handleMeasurementChange('pricePerLinearFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} /></div>
-            <div><label style={labelStyle}>Height (ft)</label><input type="number" value={measurements.height || ""} onChange={(e) => handleMeasurementChange('height', e.target.value)} style={inputStyle} /></div>
-            <div><label style={labelStyle}>Gate Count</label><input type="number" value={measurements.gateCount || ""} onChange={(e) => handleMeasurementChange('gateCount', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Linear Feet</label><input type="number" step="any" value={measurements.linearFeet || ""} onChange={(e) => handleMeasurementChange('linearFeet', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Price per Linear Foot ($)</label><input type="number" step="any" value={measurements.pricePerLinearFoot || ""} onChange={(e) => handleMeasurementChange('pricePerLinearFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} /></div>
+            <div><label style={labelStyle}>Height (ft)</label><input type="number" step="any" value={measurements.height || ""} onChange={(e) => handleMeasurementChange('height', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Gate Count</label><input type="number" step="any" value={measurements.gateCount || ""} onChange={(e) => handleMeasurementChange('gateCount', e.target.value)} style={inputStyle} /></div>
             
-            <div><label style={labelStyle}>Gate Width (ft)</label><input type="number" value={measurements.gateWidth || ""} onChange={(e) => handleMeasurementChange('gateWidth', e.target.value)} style={inputStyle} /></div>
-            <div><label style={labelStyle}>Line Posts</label><input type="number" value={measurements.linePosts || ""} onChange={(e) => handleMeasurementChange('linePosts', e.target.value)} style={inputStyle} /></div>
-            <div><label style={labelStyle}>Corner Posts</label><input type="number" value={measurements.cornerPosts || ""} onChange={(e) => handleMeasurementChange('cornerPosts', e.target.value)} style={inputStyle} /></div>
-            <div><label style={labelStyle}>Terminal Posts</label><input type="number" value={measurements.terminalPosts || ""} onChange={(e) => handleMeasurementChange('terminalPosts', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Gate Width (ft)</label><input type="number" step="any" value={measurements.gateWidth || ""} onChange={(e) => handleMeasurementChange('gateWidth', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Line Posts</label><input type="number" step="any" value={measurements.linePosts || ""} onChange={(e) => handleMeasurementChange('linePosts', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Corner Posts</label><input type="number" step="any" value={measurements.cornerPosts || ""} onChange={(e) => handleMeasurementChange('cornerPosts', e.target.value)} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Terminal Posts</label><input type="number" step="any" value={measurements.terminalPosts || ""} onChange={(e) => handleMeasurementChange('terminalPosts', e.target.value)} style={inputStyle} /></div>
           </div>
         </section>
 
@@ -395,11 +395,11 @@ export default function EditEstimatePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Linear Feet</label>
-              <input type="number" value={railings.linearFeet || ""} onChange={(e) => handleRailingsChange('linearFeet', e.target.value)} style={inputStyle} />
+              <input type="number" step="any" value={railings.linearFeet || ""} onChange={(e) => handleRailingsChange('linearFeet', e.target.value)} style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Price per Foot ($)</label>
-              <input type="number" value={railings.pricePerFoot || ""} onChange={(e) => handleRailingsChange('pricePerFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} />
+              <input type="number" step="any" value={railings.pricePerFoot || ""} onChange={(e) => handleRailingsChange('pricePerFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} />
             </div>
             <div>
               <label style={labelStyle}>Style</label>
@@ -418,8 +418,8 @@ export default function EditEstimatePage() {
           {lineItems.map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
               <input type="text" value={item.name} onChange={(e) => updateLineItem(i, 'name', e.target.value)} placeholder="Item" style={{...inputStyle, flex: 2}} />
-              <input type="number" value={item.quantity} onChange={(e) => updateLineItem(i, 'quantity', e.target.value)} placeholder="Qty (FT)" style={{...inputStyle, width: '80px'}} />
-              <input type="number" value={item.unitPrice} onChange={(e) => updateLineItem(i, 'unitPrice', e.target.value)} placeholder="Price" style={{...inputStyle, width: '100px'}} />
+              <input type="number" step="any" value={item.quantity} onChange={(e) => updateLineItem(i, 'quantity', e.target.value)} placeholder="Qty (FT)" style={{...inputStyle, width: '80px'}} />
+              <input type="number" step="any" value={item.unitPrice} onChange={(e) => updateLineItem(i, 'unitPrice', e.target.value)} placeholder="Price" style={{...inputStyle, width: '100px'}} />
               <button type="button" onClick={() => removeLineItem(i)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>✖</button>
             </div>
           ))}
