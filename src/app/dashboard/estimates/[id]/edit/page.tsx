@@ -428,7 +428,7 @@ export default function EditEstimatePage() {
       </div>
 
       {/* RIGHT COLUMN - STICKY SUMMARY */}
-      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className={isPdfGenerating ? 'hide-on-print' : ''}>
         <div style={{ ...cardStyle, background: '#111827', color: 'white' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: 'white' }}>Billing Summary</h2>
           
@@ -463,8 +463,6 @@ export default function EditEstimatePage() {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          body * { visibility: hidden; }
-          #printable-pdf, #printable-pdf * { visibility: visible; }
           #printable-pdf { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
           .hide-on-print { display: none !important; }
         }
