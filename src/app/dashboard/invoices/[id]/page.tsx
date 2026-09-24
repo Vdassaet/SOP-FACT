@@ -102,7 +102,6 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
                 <tr>
                   <th style={{ textAlign: 'left', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Item / Description</th>
                   <th style={{ textAlign: 'center', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Qty</th>
-                  <th style={{ textAlign: 'right', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Unit Price</th>
                   <th style={{ textAlign: 'right', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Total</th>
                 </tr>
               </thead>
@@ -114,13 +113,12 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
                       <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{it.description}</span>
                     </td>
                     <td style={{ textAlign: 'center', padding: '0.75rem 0.5rem', borderBottom: '1px solid #f3f4f6' }}>{it.quantity}</td>
-                    <td style={{ textAlign: 'right', padding: '0.75rem 0.5rem', borderBottom: '1px solid #f3f4f6' }}>{formatCurrency(it.unitPrice)}</td>
                     <td style={{ textAlign: 'right', padding: '0.75rem 0.5rem', borderBottom: '1px solid #f3f4f6', fontWeight: 'bold' }}>{formatCurrency(it.total)}</td>
                   </tr>
                 ))}
                 {(!invoice.items || invoice.items.length === 0) && (
                   <tr>
-                    <td colSpan={4} style={{ textAlign: 'center', padding: '1rem', color: '#9ca3af' }}>No items detailed.</td>
+                    <td colSpan={3} style={{ textAlign: 'center', padding: '1rem', color: '#9ca3af' }}>No items detailed.</td>
                   </tr>
                 )}
               </tbody>
