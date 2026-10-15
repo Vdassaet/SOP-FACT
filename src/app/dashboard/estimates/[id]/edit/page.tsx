@@ -80,6 +80,7 @@ export default function EditEstimatePage() {
   
   // Custom Line Items (Additional)
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   // Derived Values (Profitability Calculator)
   const autoCalculatedItems = useMemo(() => {
@@ -157,6 +158,15 @@ export default function EditEstimatePage() {
   // The user inputs prices that ALREADY include their margin and labor.
   const sellingPrice = allItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
 
+  // Fake print for PDF
+  const handleGeneratePDF = () => {
+    if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
+      (window as any).electronAPI.printPDF();
+    } else {
+      window.print();
+    }
+  };
+
   // Fetch Customers & Estimate
   useEffect(() => {
     fetch("/api/customers")
@@ -171,9 +181,10 @@ export default function EditEstimatePage() {
           if (data && !data.error) {
             let parsedNotes = data.description || "";
             let parsedImage = "";
+            let parsed: any = {};
             try {
               if (data.description && (data.description.startsWith("{") || data.description.startsWith("["))) {
-                const parsed = JSON.parse(data.description);
+                parsed = JSON.parse(data.description);
                 if (parsed && typeof parsed === "object") {
                   parsedNotes = parsed.notes || "";
                   parsedImage = parsed.railingImage || "";
@@ -193,6 +204,44 @@ export default function EditEstimatePage() {
               setRailingImage(parsedImage);
             }
 
+            // Restore catalog selections and detect from items if legacy
+            let detectedFence = parsed.selectedFence || null;
+            let detectedRailing = parsed.selectedRailing || null;
+            let detectedPricePerFoot = typeof parsed.pricePerLinearFoot === "number" ? parsed.pricePerLinearFoot : 0;
+
+            if (data.items && Array.isArray(data.items)) {
+              if (!detectedFence) {
+                const fItem = data.items.find((it: any) =>
+                  ["vinyl fence", "aluminum fence", "wood fence", "chain link"].some(f => (it.name || "").toLowerCase().includes(f))
+                );
+                if (fItem) {
+                  const n = fItem.name.toLowerCase();
+                  if (n.includes("vinyl")) detectedFence = "Vinyl Fence";
+                  else if (n.includes("aluminum")) detectedFence = "Aluminum Fence";
+                  else if (n.includes("wood")) detectedFence = "Wood Fence";
+                  else if (n.includes("chain link")) detectedFence = "Chain Link";
+                  if (!detectedPricePerFoot && fItem.unitPrice > 0) {
+                    detectedPricePerFoot = fItem.unitPrice;
+                  }
+                }
+              }
+              if (!detectedRailing) {
+                const rItem = data.items.find((it: any) =>
+                  ["aluminum railing", "metal railing", "pvc railing", "custom railing"].some(r => (it.name || "").toLowerCase().includes(r))
+                );
+                if (rItem) {
+                  const n = rItem.name.toLowerCase();
+                  if (n.includes("aluminum")) detectedRailing = "Aluminum Railing";
+                  else if (n.includes("metal")) detectedRailing = "Metal Railing";
+                  else if (n.includes("pvc")) detectedRailing = "PVC Railing";
+                  else if (n.includes("custom")) detectedRailing = "Custom Railing";
+                }
+              }
+            }
+
+            if (detectedFence) setSelectedFence(detectedFence);
+            if (detectedRailing) setSelectedRailing(detectedRailing);
+
             setFormData({
               customerId: data.customerId || "",
               propertyType: data.propertyType || "Residential",
@@ -203,9 +252,10 @@ export default function EditEstimatePage() {
               installAddress: data.installAddress || "",
               notes: parsedNotes,
             });
+
             setMeasurements({
               linearFeet: data.linearFeet || 0,
-              pricePerLinearFoot: 0, // Reset to 0 so we don't double count if we load items
+              pricePerLinearFoot: detectedPricePerFoot,
               height: data.height || 6,
               gateCount: data.gateCount || 0,
               gateWidth: data.gateWidth || 4,
@@ -214,21 +264,57 @@ export default function EditEstimatePage() {
               terminalPosts: data.terminalPosts || 0
             });
             
-            // Map existing DB items to lineItems so user can edit them manually
-            if (data.items && Array.isArray(data.items)) {
-              setLineItems(data.items.map((it: any) => ({
+            // Map custom line items WITHOUT duplicating auto-calculated items
+            let loadedCustomItems: LineItem[] = [];
+            if (Array.isArray(parsed.customLineItems)) {
+              loadedCustomItems = parsed.customLineItems;
+            } else if (data.items && Array.isArray(data.items)) {
+              const hasRailings = Array.isArray(parsed.railingsList) && parsed.railingsList.length > 0;
+              const hasFence = Boolean(detectedFence || (data.linearFeet && data.linearFeet > 0));
+
+              loadedCustomItems = data.items.filter((it: any) => {
+                const nameLower = (it.name || "").toLowerCase();
+                // Filter out railing items generated automatically
+                if (hasRailings) {
+                  if (nameLower.includes("railing")) return false;
+                  if (parsed.railingsList.some((r: any) => r.location && it.name.includes(r.location))) return false;
+                }
+                // Filter out fence items generated automatically
+                if (hasFence) {
+                  if (["vinyl fence", "aluminum fence", "wood fence", "chain link"].some(f => nameLower.includes(f))) return false;
+                  if (nameLower.endsWith("posts")) return false;
+                  if (nameLower.includes("gate") && (it.description === "Included" || it.description === "Gates")) return false;
+                }
+                return true;
+              }).map((it: any) => ({
                 id: it.id,
                 name: it.name,
                 description: it.description || "",
                 quantity: it.quantity,
                 unitPrice: it.unitPrice,
-              })));
+              }));
             }
+
+            setLineItems(loadedCustomItems);
+            setDataLoaded(true);
           }
         })
         .catch(e => console.error(e));
     }
   }, [estimateId]);
+
+  // Auto-print if opened with ?print=true
+  useEffect(() => {
+    if (dataLoaded && typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("print") === "true") {
+        const timer = setTimeout(() => {
+          handleGeneratePDF();
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [dataLoaded]);
 
   // Handlers
   const handleMeasurementChange = (field: string, val: string) => {
@@ -333,14 +419,15 @@ export default function EditEstimatePage() {
     setLoading(true);
 
     try {
-      let descriptionPayload = formData.notes || "";
-      if (railingImage || railingsList.some(r => r.linearFeet > 0)) {
-        descriptionPayload = JSON.stringify({
-          notes: formData.notes || "",
-          railingImage: railingImage,
-          railingsList: railingsList
-        });
-      }
+      const descriptionPayload = JSON.stringify({
+        notes: formData.notes || "",
+        railingImage: railingImage,
+        railingsList: railingsList,
+        selectedFence: selectedFence,
+        selectedRailing: selectedRailing,
+        pricePerLinearFoot: measurements.pricePerLinearFoot,
+        customLineItems: lineItems
+      });
 
       const payload = {
         ...formData,
@@ -371,15 +458,6 @@ export default function EditEstimatePage() {
       alert("Connection error");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Fake print for PDF
-  const handleGeneratePDF = () => {
-    if (typeof window !== 'undefined' && (window as any).electronAPI?.isElectron) {
-      (window as any).electronAPI.printPDF();
-    } else {
-      window.print();
     }
   };
 

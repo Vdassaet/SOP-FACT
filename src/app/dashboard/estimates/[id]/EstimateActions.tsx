@@ -36,8 +36,20 @@ export default function EstimateActions({ estimateId, estimateStatus }: { estima
     router.push(`/dashboard/estimates/${estimateId}/edit`);
   };
 
+  const handlePrint = () => {
+    router.push(`/dashboard/estimates/${estimateId}/edit?print=true`);
+  };
+
   return (
     <div style={{ display: 'flex', gap: '1rem' }}>
+      <button 
+        type="button"
+        onClick={handlePrint}
+        style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', background: '#059669', color: 'white', border: 'none', cursor: 'pointer', fontWeight: '500' }}
+      >
+        🖨️ Print PDF
+      </button>
+
       <button 
         type="button"
         onClick={handleEdit}

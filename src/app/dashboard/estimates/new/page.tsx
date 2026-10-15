@@ -264,14 +264,15 @@ export default function NewEstimatePage() {
     setLoading(true);
 
     try {
-      let descriptionPayload = formData.notes || "";
-      if (railingImage || railingsList.length > 0) {
-        descriptionPayload = JSON.stringify({
-          notes: formData.notes || "",
-          railingImage: railingImage,
-          railingsList: railingsList
-        });
-      }
+      const descriptionPayload = JSON.stringify({
+        notes: formData.notes || "",
+        railingImage: railingImage,
+        railingsList: railingsList,
+        selectedFence: selectedFence,
+        selectedRailing: selectedRailing,
+        pricePerLinearFoot: measurements.pricePerLinearFoot,
+        customLineItems: lineItems
+      });
 
       const payload = {
         ...formData,

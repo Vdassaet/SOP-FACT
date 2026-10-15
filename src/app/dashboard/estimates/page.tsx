@@ -63,9 +63,15 @@ export default async function EstimatesPage() {
                       {est.status}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <Link href={`/dashboard/estimates/${est.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  <td style={{ padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <Link href={`/dashboard/estimates/${est.id}`} style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>
                       View
+                    </Link>
+                    <Link 
+                      href={`/dashboard/estimates/${est.id}/edit?print=true`} 
+                      style={{ color: '#059669', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}
+                    >
+                      Print PDF
                     </Link>
                     <DeleteButton id={est.id} endpoint="estimates" itemName="Estimate" />
                   </td>
