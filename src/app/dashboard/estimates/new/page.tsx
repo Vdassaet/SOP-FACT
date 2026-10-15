@@ -425,7 +425,7 @@ export default function NewEstimatePage() {
                 onClick={() => setRailingImage("")}
                 style={{ color: '#dc2626', background: 'none', border: 'none', fontSize: '0.875rem', cursor: 'pointer', fontWeight: '500' }}
               >
-                ✕ Eliminar Imagen
+                ✕ Remove Image
               </button>
             )}
           </div>
@@ -461,10 +461,10 @@ export default function NewEstimatePage() {
                   boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
                 }}
               >
-                📷 Agregar Imagen de Estilo
+                📷 Add Style Image
               </label>
               <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>
-                Sube una imagen del estilo de barandilla. Aparecerá al final de la propuesta en PDF con un tamaño compacto y profesional.
+                Upload an image of the railing style. It will appear at the end of the proposal PDF in a clean, professional size.
               </p>
             </div>
           ) : (
@@ -472,15 +472,15 @@ export default function NewEstimatePage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={railingImage} 
-                alt="Vista previa del estilo" 
+                alt="Railing style preview" 
                 style={{ height: '80px', width: 'auto', maxWidth: '120px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #d1d5db', backgroundColor: 'white' }} 
               />
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
-                  {railings.style ? `Estilo: ${railings.style}` : "Imagen de estilo seleccionada"}
+                  {railings.style ? `Style: ${railings.style}` : "Railing style selected"}
                 </p>
                 <p style={{ margin: '0.25rem 0 0.5rem 0', fontSize: '0.75rem', color: '#4b5563' }}>
-                  ✓ Lista para el PDF al final del documento.
+                  ✓ Included at the end of the proposal PDF.
                 </p>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <input 
@@ -494,14 +494,14 @@ export default function NewEstimatePage() {
                     htmlFor="new-railing-image-change" 
                     style={{ fontSize: '0.8125rem', color: '#2563eb', cursor: 'pointer', fontWeight: '500', textDecoration: 'underline' }}
                   >
-                    Cambiar Imagen
+                    Change Image
                   </label>
                   <button 
                     type="button" 
                     onClick={() => setRailingImage("")}
                     style={{ fontSize: '0.8125rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' }}
                   >
-                    Quitar
+                    Remove
                   </button>
                 </div>
               </div>
@@ -552,7 +552,7 @@ export default function NewEstimatePage() {
 
           {railingImage ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.625rem 0.75rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '6px', fontSize: '0.8125rem', color: '#065f46' }}>
-              <span>📷 Imagen de estilo adjunta</span>
+              <span>📷 Style image attached</span>
               <button type="button" onClick={() => setRailingImage("")} style={{ marginLeft: 'auto', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
           ) : (
@@ -568,7 +568,7 @@ export default function NewEstimatePage() {
                 htmlFor="new-summary-railing-upload" 
                 style={{ ...btnStyle, display: 'block', background: 'white', border: '1px dashed #9ca3af', color: '#374151', fontSize: '0.875rem', padding: '0.75rem', cursor: 'pointer' }}
               >
-                + Agregar Imagen al PDF
+                + Add Style Image to PDF
               </label>
             </div>
           )}
@@ -706,7 +706,7 @@ export default function NewEstimatePage() {
                 display: 'block',
                 marginBottom: '0.25rem'
               }}>
-                Railing Style Reference / Estilo de Barandilla
+                Railing Style Reference
               </span>
               {railings.style ? (
                 <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
