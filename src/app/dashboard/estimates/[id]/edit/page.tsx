@@ -939,12 +939,9 @@ export default function EditEstimatePage() {
               {railingsList.some(r => r.linearFeet > 0) && (
                 <div style={{ marginTop: '0.5rem' }}>
                   <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing || 'Custom Railing'}</p>
-                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
-                    <p key={r.id || idx} style={{ margin: 0 }}>
-                      {r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}
-                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
-                    </p>
-                  ))}
+                  <p style={{ margin: 0 }}>
+                    Total Length: {railingsList.reduce((acc, r) => acc + (r.linearFeet || 0), 0)} ft ({railingsList.filter(r => r.linearFeet > 0).length} {railingsList.filter(r => r.linearFeet > 0).length === 1 ? 'section' : 'sections'} — see breakdown below)
+                  </p>
                 </div>
               )}
             </div>
@@ -984,42 +981,65 @@ export default function EditEstimatePage() {
           <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
         </div>
 
-        {/* Selected Railing Style Reference Image at the very end of all information */}
-        {railingImage && (
+        {/* Selected Railing Style Reference Image & Section Breakdown */}
+        {(railingImage || railingsList.some(r => r.linearFeet > 0)) && (
           <div style={{ 
             border: '1px solid #e5e7eb', 
             borderRadius: '6px', 
-            padding: '0.75rem 1rem', 
+            padding: '1rem', 
             backgroundColor: '#ffffff',
-            display: 'inline-flex', 
-            flexDirection: 'column', 
-            alignItems: 'flex-start', 
-            gap: '0.35rem',
             pageBreakInside: 'avoid'
           }}>
-            <span style={{ 
-              fontSize: '0.75rem', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
-              letterSpacing: '0.05em', 
-              color: '#4b5563'
-            }}>
-              Railing Style Reference
-            </span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={railingImage} 
-              alt="Railing Style Reference" 
-              style={{ 
-                height: '110px', 
-                maxWidth: '180px', 
-                objectFit: 'contain', 
-                borderRadius: '4px', 
-                border: '1px solid #d1d5db',
-                padding: '2px',
-                backgroundColor: 'white'
-              }} 
-            />
+            {railingImage && (
+              <div style={{ marginBottom: railingsList.some(r => r.linearFeet > 0) ? '0.75rem' : '0' }}>
+                <span style={{ 
+                  fontSize: '0.75rem', 
+                  fontWeight: 'bold', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '0.05em', 
+                  color: '#4b5563',
+                  display: 'block',
+                  marginBottom: '0.35rem'
+                }}>
+                  Railing Style Reference
+                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={railingImage} 
+                  alt="Railing Style Reference" 
+                  style={{ 
+                    maxHeight: '120px', 
+                    maxWidth: '190px', 
+                    objectFit: 'contain', 
+                    borderRadius: '4px', 
+                    border: '1px solid #d1d5db',
+                    padding: '2px',
+                    backgroundColor: 'white'
+                  }} 
+                />
+              </div>
+            )}
+
+            {railingsList.some(r => r.linearFeet > 0) && (
+              <div style={{ 
+                borderTop: railingImage ? '1px solid #e5e7eb' : 'none', 
+                paddingTop: railingImage ? '0.75rem' : '0',
+                fontSize: '0.8125rem',
+                color: '#111827'
+              }}>
+                <p style={{ margin: '0 0 0.4rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
+                  Railing: {selectedRailing || 'Aluminum Railing'}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
+                    <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
+                      <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
+                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
