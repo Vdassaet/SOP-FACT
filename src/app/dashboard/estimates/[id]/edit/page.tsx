@@ -896,12 +896,60 @@ export default function EditEstimatePage() {
             print-color-adjust: exact !important;
           }
           .hide-on-print { display: none !important; }
+          #printable-pdf {
+            position: static !important;
+            width: 100% !important;
+          }
+          .print-watermark-wrapper {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 0 !important;
+          }
         }
       `}} />
 
       {/* HIDDEN PRINT TEMPLATE */}
-      <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'absolute', left: 0, top: 0, width: '100%' }}>
-        <img src="/logo-watermark.jpg" alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+      <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'relative', width: '100%' }}>
+        {/* Centered Watermark Logo for Print (Stays centered in the middle of each printed page) */}
+        <div 
+          className="print-watermark-wrapper"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            pointerEvents: 'none', 
+            zIndex: 0 
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/logo-watermark.jpg" 
+            alt="" 
+            style={{ 
+              width: '550px', 
+              maxWidth: '80%', 
+              height: 'auto', 
+              opacity: 0.08, 
+              pointerEvents: 'none' 
+            }} 
+          />
+        </div>
         <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
           <div>
@@ -1018,7 +1066,10 @@ export default function EditEstimatePage() {
             justifyContent: 'center', 
             alignItems: 'center', 
             textAlign: 'center',
-            padding: '2rem 1rem'
+            padding: '2rem 1rem',
+            position: 'relative',
+            zIndex: 2,
+            backgroundColor: 'white'
           }}>
             <h2 style={{ 
               fontSize: '1.25rem', 
