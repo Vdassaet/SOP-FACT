@@ -373,8 +373,8 @@ export default function EditEstimatePage() {
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
-        // Optimize to max 1000px dimension and convert to JPEG for crisp printing with minimal payload
-        const maxDim = 1000;
+        // Optimize to max 1600px dimension and convert to JPEG for crisp full-page printing with minimal payload
+        const maxDim = 1600;
         let width = img.width;
         let height = img.height;
 
@@ -981,64 +981,75 @@ export default function EditEstimatePage() {
           <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
         </div>
 
-        {/* Selected Railing Style Reference Image & Section Breakdown */}
-        {(railingImage || railingsList.some(r => r.linearFeet > 0)) && (
+        {/* Railing Section Breakdown */}
+        {railingsList.some(r => r.linearFeet > 0) && (
           <div style={{ 
             border: '1px solid #e5e7eb', 
             borderRadius: '6px', 
             padding: '1rem', 
             backgroundColor: '#ffffff',
+            marginBottom: '1.5rem',
+            fontSize: '0.8125rem',
+            color: '#111827',
             pageBreakInside: 'avoid'
           }}>
-            {railingImage && (
-              <div style={{ marginBottom: railingsList.some(r => r.linearFeet > 0) ? '0.75rem' : '0' }}>
-                <span style={{ 
-                  fontSize: '0.75rem', 
-                  fontWeight: 'bold', 
-                  textTransform: 'uppercase', 
-                  letterSpacing: '0.05em', 
-                  color: '#4b5563',
-                  display: 'block',
-                  marginBottom: '0.35rem'
-                }}>
-                  Railing Style Reference
-                </span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={railingImage} 
-                  alt="Railing Style Reference" 
-                  style={{ 
-                    maxHeight: '120px', 
-                    maxWidth: '190px', 
-                    objectFit: 'contain', 
-                    borderRadius: '4px', 
-                    border: '1px solid #d1d5db',
-                    padding: '2px',
-                    backgroundColor: 'white'
-                  }} 
-                />
-              </div>
-            )}
-
-            {railingsList.some(r => r.linearFeet > 0) && (
-              <div style={{ 
-                borderTop: railingImage ? '1px solid #e5e7eb' : 'none', 
-                paddingTop: railingImage ? '0.75rem' : '0',
-                fontSize: '0.8125rem',
-                color: '#111827'
-              }}>
-                <p style={{ margin: '0 0 0.4rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
-                  Railing: {selectedRailing || 'Aluminum Railing'}
+            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
+              Railing Specifications: {selectedRailing || 'Aluminum Railing'}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
+                <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
+                  <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
+                  {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
-                    <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
-                      <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
-                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
-                    </p>
-                  ))}
-                </div>
-              </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Standalone Full-Page Railing Style Reference (Centered on its own page) */}
+        {railingImage && (
+          <div style={{ 
+            pageBreakBefore: 'always', 
+            breakBefore: 'page',
+            minHeight: '8.5in',
+            display: 'flex', 
+            flexDirection: 'column', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            textAlign: 'center',
+            padding: '2rem 1rem'
+          }}>
+            <h2 style={{ 
+              fontSize: '1.25rem', 
+              fontWeight: 'bold', 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.08em', 
+              color: '#1f2937',
+              marginBottom: '1.5rem'
+            }}>
+              Railing Style Reference
+            </h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={railingImage} 
+              alt="Railing Style Reference" 
+              style={{ 
+                maxHeight: '6.5in', 
+                maxWidth: '85%', 
+                width: 'auto',
+                objectFit: 'contain', 
+                borderRadius: '8px', 
+                border: '1px solid #d1d5db',
+                padding: '8px',
+                backgroundColor: 'white',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }} 
+            />
+            {selectedRailing && (
+              <p style={{ marginTop: '1.25rem', fontSize: '0.9375rem', fontWeight: '600', color: '#4b5563' }}>
+                {selectedRailing}
+              </p>
             )}
           </div>
         )}
