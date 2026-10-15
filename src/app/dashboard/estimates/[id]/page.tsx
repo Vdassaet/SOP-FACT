@@ -24,6 +24,16 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
     return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
   };
 
+  let railingImage = "";
+  try {
+    if (estimate.description && estimate.description.startsWith("{")) {
+      const parsed = JSON.parse(estimate.description);
+      railingImage = parsed.railingImage || "";
+    } else if (estimate.description && estimate.description.startsWith("data:image")) {
+      railingImage = estimate.description;
+    }
+  } catch {}
+
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       
@@ -144,6 +154,24 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
               </table>
             </div>
           </div>
+
+          {/* Railing Style Image Card if present */}
+          {railingImage && (
+            <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Railing Style Reference</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={railingImage} 
+                  alt="Railing Style" 
+                  style={{ height: '110px', width: 'auto', maxWidth: '160px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #d1d5db', padding: '4px', backgroundColor: '#f9fafb' }} 
+                />
+                <p style={{ margin: 0, fontSize: '0.875rem', color: '#4b5563' }}>
+                  Model and design selected for railing installation in this estimate.
+                </p>
+              </div>
+            </div>
+          )}
 
         </div>
 

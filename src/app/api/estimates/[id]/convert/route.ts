@@ -32,6 +32,15 @@ export async function POST(
         data: { status: "PROJECT" },
       });
 
+      // Clean up description if it was stored as JSON with an image
+      let cleanDesc = estimate.description || "";
+      try {
+        if (cleanDesc.startsWith("{")) {
+          const parsed = JSON.parse(cleanDesc);
+          cleanDesc = parsed.notes || "";
+        }
+      } catch {}
+
       // 2. Create the Project
       const newProject = await tx.project.create({
         data: {
@@ -40,7 +49,7 @@ export async function POST(
           address: estimate.installAddress || estimate.projectAddress || "TBD",
           jobType: estimate.projectType || "New Installation",
           status: "NEW_LEAD",
-          description: `Converted from Estimate ${estimate.number}. ${estimate.description || ""}`,
+          description: `Converted from Estimate ${estimate.number}. ${cleanDesc}`,
         },
       });
 

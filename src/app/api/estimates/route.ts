@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       data: {
         number: estimateNumber,
         customerId: data.customerId,
-        description: data.notes || null,
+        description: data.description || data.notes || null,
         
         // CRM / Project Extensions
         propertyType: data.propertyType || null,

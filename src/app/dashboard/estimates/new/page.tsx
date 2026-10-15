@@ -19,6 +19,7 @@ export default function NewEstimatePage() {
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [railingImage, setRailingImage] = useState<string>("");
 
   // Form Data
   const [formData, setFormData] = useState({
@@ -168,6 +169,46 @@ export default function NewEstimatePage() {
     });
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // Optimize to max 1000px dimension and convert to JPEG for crisp printing with minimal payload
+        const maxDim = 1000;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL("image/jpeg", 0.85);
+          setRailingImage(compressed);
+        } else {
+          setRailingImage(event.target?.result as string);
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const addLineItem = () => setLineItems([...lineItems, { name: "", description: "", quantity: 1, unitPrice: 0 }]);
   const updateLineItem = (i: number, field: keyof LineItem, val: any) => {
     const updated = [...lineItems];
@@ -182,8 +223,17 @@ export default function NewEstimatePage() {
     setLoading(true);
 
     try {
+      let descriptionPayload = formData.notes || "";
+      if (railingImage) {
+        descriptionPayload = JSON.stringify({
+          notes: formData.notes || "",
+          railingImage: railingImage
+        });
+      }
+
       const payload = {
         ...formData,
+        description: descriptionPayload,
         ...measurements,
         ...labor,
         margin: 0, // No longer tracked as a separate % here since it's baked into unit prices
@@ -363,6 +413,102 @@ export default function NewEstimatePage() {
           </div>
         </section>
 
+        {/* 5b. Foto del Estilo de Barandilla */}
+        <section style={cardStyle}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ ...sectionTitle, borderBottom: 'none', paddingBottom: 0, marginBottom: 0 }}>
+              Railing Style Image (PDF Reference)
+            </h2>
+            {railingImage && (
+              <button 
+                type="button" 
+                onClick={() => setRailingImage("")}
+                style={{ color: '#dc2626', background: 'none', border: 'none', fontSize: '0.875rem', cursor: 'pointer', fontWeight: '500' }}
+              >
+                ✕ Eliminar Imagen
+              </button>
+            )}
+          </div>
+
+          {!railingImage ? (
+            <div style={{
+              border: '2px dashed #d1d5db',
+              borderRadius: '8px',
+              padding: '1.25rem',
+              textAlign: 'center',
+              backgroundColor: '#f9fafb'
+            }}>
+              <input 
+                type="file" 
+                id="new-railing-image-upload" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={handleImageUpload} 
+              />
+              <label 
+                htmlFor="new-railing-image-upload" 
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '0.5rem', 
+                  backgroundColor: '#2563eb', 
+                  color: 'white', 
+                  padding: '0.625rem 1.25rem', 
+                  borderRadius: '6px', 
+                  fontWeight: '600', 
+                  fontSize: '0.875rem', 
+                  cursor: 'pointer',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                }}
+              >
+                📷 Agregar Imagen de Estilo
+              </label>
+              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>
+                Sube una imagen del estilo de barandilla. Aparecerá al final de la propuesta en PDF con un tamaño compacto y profesional.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={railingImage} 
+                alt="Vista previa del estilo" 
+                style={{ height: '80px', width: 'auto', maxWidth: '120px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #d1d5db', backgroundColor: 'white' }} 
+              />
+              <div style={{ flex: 1 }}>
+                <p style={{ margin: 0, fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
+                  {railings.style ? `Estilo: ${railings.style}` : "Imagen de estilo seleccionada"}
+                </p>
+                <p style={{ margin: '0.25rem 0 0.5rem 0', fontSize: '0.75rem', color: '#4b5563' }}>
+                  ✓ Lista para el PDF al final del documento.
+                </p>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <input 
+                    type="file" 
+                    id="new-railing-image-change" 
+                    accept="image/*" 
+                    style={{ display: 'none' }} 
+                    onChange={handleImageUpload} 
+                  />
+                  <label 
+                    htmlFor="new-railing-image-change" 
+                    style={{ fontSize: '0.8125rem', color: '#2563eb', cursor: 'pointer', fontWeight: '500', textDecoration: 'underline' }}
+                  >
+                    Cambiar Imagen
+                  </label>
+                  <button 
+                    type="button" 
+                    onClick={() => setRailingImage("")}
+                    style={{ fontSize: '0.8125rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* Adicionales (Custom Items) */}
         <section style={cardStyle}>
           <h2 style={sectionTitle}>Additional Items</h2>
@@ -403,6 +549,29 @@ export default function NewEstimatePage() {
           <button onClick={handleGeneratePDF} style={{ ...btnStyle, background: '#f3f4f6', color: '#374151' }}>
             🖨️ Generate Corporate PDF
           </button>
+
+          {railingImage ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.625rem 0.75rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '6px', fontSize: '0.8125rem', color: '#065f46' }}>
+              <span>📷 Imagen de estilo adjunta</span>
+              <button type="button" onClick={() => setRailingImage("")} style={{ marginLeft: 'auto', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+            </div>
+          ) : (
+            <div>
+              <input 
+                type="file" 
+                id="new-summary-railing-upload" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={handleImageUpload} 
+              />
+              <label 
+                htmlFor="new-summary-railing-upload" 
+                style={{ ...btnStyle, display: 'block', background: 'white', border: '1px dashed #9ca3af', color: '#374151', fontSize: '0.875rem', padding: '0.75rem', cursor: 'pointer' }}
+              >
+                + Agregar Imagen al PDF
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -487,7 +656,7 @@ export default function NewEstimatePage() {
           </tbody>
         </table>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
           <div style={{ width: '300px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid black' }}>
               <span>TOTAL ESTIMATE:</span>
@@ -496,10 +665,61 @@ export default function NewEstimatePage() {
           </div>
         </div>
 
-        <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: '2rem', fontSize: '0.875rem' }}>
+        <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem' }}>
           <strong>Terms & Conditions:</strong>
           <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
         </div>
+
+        {/* Selected Railing Style Reference Image at the very end of all information */}
+        {railingImage && (
+          <div style={{ 
+            border: '1px solid #e5e7eb', 
+            borderRadius: '6px', 
+            padding: '0.75rem 1rem', 
+            backgroundColor: '#ffffff',
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '1.25rem',
+            pageBreakInside: 'avoid'
+          }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={railingImage} 
+              alt="Railing Style Reference" 
+              style={{ 
+                height: '95px', 
+                maxWidth: '150px', 
+                objectFit: 'contain', 
+                borderRadius: '4px', 
+                border: '1px solid #d1d5db',
+                padding: '2px',
+                backgroundColor: 'white'
+              }} 
+            />
+            <div>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                fontWeight: 'bold', 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.05em', 
+                color: '#4b5563', 
+                display: 'block',
+                marginBottom: '0.25rem'
+              }}>
+                Railing Style Reference / Estilo de Barandilla
+              </span>
+              {railings.style ? (
+                <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
+                  {railings.style} {railings.color ? `(${railings.color})` : ''}
+                </p>
+              ) : (
+                <p style={{ margin: 0, fontSize: '0.8125rem', color: '#374151' }}>
+                  Selected design reference for installation
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         </div>
       </div>
