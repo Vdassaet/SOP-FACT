@@ -13,6 +13,15 @@ type LineItem = {
   total?: number;
 };
 
+type RailingItem = {
+  id: string;
+  location: string;
+  linearFeet: number;
+  pricePerFoot: number;
+  style: string;
+  color: string;
+};
+
 // --- Main Component ---
 export default function EditEstimatePage() {
   const router = useRouter();
@@ -60,13 +69,10 @@ export default function EditEstimatePage() {
     overheadPercent: 0
   });
 
-  // Railings Data
-  const [railings, setRailings] = useState({
-    linearFeet: 0,
-    pricePerFoot: 0,
-    style: "",
-    color: ""
-  });
+  // Railings Data (Multi-section / Multi-house support)
+  const [railingsList, setRailingsList] = useState<RailingItem[]>([
+    { id: "1", location: "", linearFeet: 0, pricePerFoot: 0, style: "", color: "" }
+  ]);
 
   // Selected Catalog Items
   const [selectedFence, setSelectedFence] = useState<string | null>(null);
@@ -116,24 +122,34 @@ export default function EditEstimatePage() {
       }
     }
 
-    // --- RAILINGS LOGIC ---
-    if (selectedRailing && railings.linearFeet > 0 && railings.pricePerFoot > 0) {
-      let rName = selectedRailing;
-      if (railings.color) rName += ` (${railings.color})`;
-      
-      let rDesc = "Included";
-      if (railings.style) rDesc = `Style: ${railings.style}`;
+    // --- RAILINGS LOGIC (Multi-section / Multi-house) ---
+    railingsList.forEach((r) => {
+      if (r.linearFeet > 0 && r.pricePerFoot > 0) {
+        let baseName = selectedRailing || "Aluminum Railing";
+        let rName = baseName;
+        if (r.location && r.location.trim()) {
+          rName += ` - ${r.location.trim()}`;
+        }
+        if (r.color && r.color.trim()) {
+          rName += ` [${r.color.trim()}]`;
+        }
 
-      items.push({
-        name: rName,
-        description: rDesc,
-        quantity: railings.linearFeet,
-        unitPrice: railings.pricePerFoot
-      });
-    }
+        let rDesc = "";
+        if (r.style && r.style.trim()) {
+          rDesc = `Style: ${r.style.trim()}`;
+        }
+
+        items.push({
+          name: rName,
+          description: rDesc || "Included",
+          quantity: r.linearFeet,
+          unitPrice: r.pricePerFoot
+        });
+      }
+    });
 
     return items;
-  }, [selectedFence, selectedRailing, measurements, railings]);
+  }, [selectedFence, selectedRailing, measurements, railingsList]);
 
   const allItems = [...autoCalculatedItems, ...lineItems];
   
@@ -161,6 +177,9 @@ export default function EditEstimatePage() {
                 if (parsed && typeof parsed === "object") {
                   parsedNotes = parsed.notes || "";
                   parsedImage = parsed.railingImage || "";
+                  if (Array.isArray(parsed.railingsList) && parsed.railingsList.length > 0) {
+                    setRailingsList(parsed.railingsList);
+                  }
                 }
               } else if (data.description && data.description.startsWith("data:image")) {
                 parsedImage = data.description;
@@ -228,11 +247,36 @@ export default function EditEstimatePage() {
     setLabor(prev => ({ ...prev, [field]: parseFloat(val) || 0 }));
   };
 
-  const handleRailingsChange = (field: string, val: string) => {
-    setRailings(prev => {
-      const isNum = field === 'linearFeet' || field === 'pricePerFoot';
-      return { ...prev, [field]: isNum ? parseFloat(val) || 0 : val };
-    });
+  const handleRailingChange = (id: string, field: keyof RailingItem, val: string) => {
+    setRailingsList(prev => prev.map(item => {
+      if (item.id === id) {
+        const isNum = field === 'linearFeet' || field === 'pricePerFoot';
+        return { ...item, [field]: isNum ? parseFloat(val) || 0 : val };
+      }
+      return item;
+    }));
+  };
+
+  const addRailingSection = () => {
+    setRailingsList(prev => [
+      ...prev,
+      {
+        id: Math.random().toString(36).substring(2, 9),
+        location: "",
+        linearFeet: 0,
+        pricePerFoot: prev[prev.length - 1]?.pricePerFoot || 0,
+        style: prev[prev.length - 1]?.style || "",
+        color: prev[prev.length - 1]?.color || ""
+      }
+    ]);
+  };
+
+  const removeRailingSection = (id: string) => {
+    if (railingsList.length === 1) {
+      setRailingsList([{ id: "1", location: "", linearFeet: 0, pricePerFoot: 0, style: "", color: "" }]);
+      return;
+    }
+    setRailingsList(prev => prev.filter(item => item.id !== id));
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -290,10 +334,11 @@ export default function EditEstimatePage() {
 
     try {
       let descriptionPayload = formData.notes || "";
-      if (railingImage) {
+      if (railingImage || railingsList.some(r => r.linearFeet > 0)) {
         descriptionPayload = JSON.stringify({
           notes: formData.notes || "",
-          railingImage: railingImage
+          railingImage: railingImage,
+          railingsList: railingsList
         });
       }
 
@@ -456,26 +501,149 @@ export default function EditEstimatePage() {
           </div>
         </section>
 
-        {/* 5. Estimado de Railings (Reemplazó a Mano de Obra) */}
+        {/* 5. Railings Estimate (Multi-section / Multi-house support) */}
         <section style={cardStyle}>
-          <h2 style={sectionTitle}>Railings Estimate</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.75rem' }}>
             <div>
-              <label style={labelStyle}>Linear Feet</label>
-              <input type="number" step="any" value={railings.linearFeet || ""} onChange={(e) => handleRailingsChange('linearFeet', e.target.value)} style={inputStyle} />
+              <h2 style={{ ...sectionTitle, borderBottom: 'none', paddingBottom: 0, marginBottom: '0.25rem' }}>
+                Railings Estimate
+              </h2>
+              <p style={{ margin: 0, fontSize: '0.8125rem', color: '#6b7280' }}>
+                Add multiple railing lines for different houses, locations, or sections.
+              </p>
             </div>
-            <div>
-              <label style={labelStyle}>Price per Foot ($)</label>
-              <input type="number" step="any" value={railings.pricePerFoot || ""} onChange={(e) => handleRailingsChange('pricePerFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} />
-            </div>
-            <div>
-              <label style={labelStyle}>Style</label>
-              <input type="text" value={railings.style} onChange={(e) => handleRailingsChange('style', e.target.value)} style={inputStyle} placeholder="e.g. Glass, Picket" />
-            </div>
-            <div>
-              <label style={labelStyle}>Color</label>
-              <input type="text" value={railings.color} onChange={(e) => handleRailingsChange('color', e.target.value)} style={inputStyle} placeholder="e.g. Matte Black" />
-            </div>
+            <button
+              type="button"
+              onClick={addRailingSection}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                color: '#2563eb',
+                backgroundColor: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '6px',
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              + Add Railing / House
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {railingsList.map((item, idx) => (
+              <div 
+                key={item.id} 
+                style={{ 
+                  backgroundColor: '#f9fafb', 
+                  border: '1px solid #e5e7eb', 
+                  borderRadius: '8px', 
+                  padding: '1rem',
+                  position: 'relative'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: '700', color: '#1f2937', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Railing #{idx + 1} {item.location ? `— ${item.location}` : ''}
+                    </span>
+                    {item.linearFeet > 0 && item.pricePerFoot > 0 && (
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 'bold', color: '#059669', backgroundColor: '#d1fae5', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>
+                        ${(item.linearFeet * item.pricePerFoot).toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  {railingsList.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeRailingSection(item.id)}
+                      style={{ color: '#dc2626', background: 'none', border: 'none', fontSize: '0.8125rem', cursor: 'pointer', fontWeight: '500' }}
+                    >
+                      ✕ Remove
+                    </button>
+                  )}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                  <div>
+                    <label style={labelStyle}>House / Location</label>
+                    <input 
+                      type="text" 
+                      value={item.location} 
+                      onChange={(e) => handleRailingChange(item.id, 'location', e.target.value)} 
+                      style={inputStyle} 
+                      placeholder="e.g. House 1, Front Porch" 
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Linear Feet</label>
+                    <input 
+                      type="number" 
+                      step="any" 
+                      value={item.linearFeet || ""} 
+                      onChange={(e) => handleRailingChange(item.id, 'linearFeet', e.target.value)} 
+                      style={inputStyle} 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Price per Foot ($)</label>
+                    <input 
+                      type="number" 
+                      step="any" 
+                      value={item.pricePerFoot || ""} 
+                      onChange={(e) => handleRailingChange(item.id, 'pricePerFoot', e.target.value)} 
+                      style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#ffffff'}} 
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Style</label>
+                    <input 
+                      type="text" 
+                      value={item.style} 
+                      onChange={(e) => handleRailingChange(item.id, 'style', e.target.value)} 
+                      style={inputStyle} 
+                      placeholder="e.g. Glass, Horizontal" 
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Color</label>
+                    <input 
+                      type="text" 
+                      value={item.color} 
+                      onChange={(e) => handleRailingChange(item.id, 'color', e.target.value)} 
+                      style={inputStyle} 
+                      placeholder="e.g. Matte Black" 
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addRailingSection}
+              style={{
+                alignSelf: 'flex-start',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: '#2563eb',
+                backgroundColor: 'white',
+                border: '1px dashed #93c5fd',
+                borderRadius: '6px',
+                padding: '0.625rem 1rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              + Add Another Railing / House
+            </button>
           </div>
         </section>
 
@@ -543,7 +711,7 @@ export default function EditEstimatePage() {
               />
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
-                  {railings.style ? `Style: ${railings.style}` : "Railing style selected"}
+                  {railingsList.find(r => r.style)?.style ? `Style: ${railingsList.find(r => r.style)?.style}` : "Railing style selected"}
                 </p>
                 <p style={{ margin: '0.25rem 0 0.5rem 0', fontSize: '0.75rem', color: '#4b5563' }}>
                   ✓ Included at the end of the proposal PDF.
@@ -690,13 +858,15 @@ export default function EditEstimatePage() {
                 </div>
               )}
 
-              {selectedRailing && railings.linearFeet > 0 && (
+              {railingsList.some(r => r.linearFeet > 0) && (
                 <div style={{ marginTop: '0.5rem' }}>
-                  <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing}</p>
-                  <p style={{ margin: 0 }}>Length: {railings.linearFeet} ft</p>
-                  {(railings.style || railings.color) && (
-                    <p style={{ margin: 0 }}>Details: {railings.style} {railings.color ? `(${railings.color})` : ''}</p>
-                  )}
+                  <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing || 'Custom Railing'}</p>
+                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
+                    <p key={r.id || idx} style={{ margin: 0 }}>
+                      {r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}
+                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
+                    </p>
+                  ))}
                 </div>
               )}
             </div>
@@ -774,10 +944,17 @@ export default function EditEstimatePage() {
               }}>
                 Railing Style Reference
               </span>
-              {railings.style ? (
-                <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
-                  {railings.style} {railings.color ? `(${railings.color})` : ''}
-                </p>
+              {railingsList.some(r => r.style || r.color) ? (
+                <div>
+                  {railingsList.map((r, idx) => (
+                    (r.style || r.color) && (
+                      <p key={r.id || idx} style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
+                        {r.location ? `${r.location}: ` : ''}
+                        {r.style} {r.color ? `(${r.color})` : ''}
+                      </p>
+                    )
+                  ))}
+                </div>
               ) : (
                 <p style={{ margin: 0, fontSize: '0.8125rem', color: '#374151' }}>
                   Selected design reference for installation
