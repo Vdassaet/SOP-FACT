@@ -991,18 +991,28 @@ export default function EditEstimatePage() {
             borderRadius: '6px', 
             padding: '0.75rem 1rem', 
             backgroundColor: '#ffffff',
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '1.25rem',
+            display: 'inline-flex', 
+            flexDirection: 'column', 
+            alignItems: 'flex-start', 
+            gap: '0.35rem',
             pageBreakInside: 'avoid'
           }}>
+            <span style={{ 
+              fontSize: '0.75rem', 
+              fontWeight: 'bold', 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.05em', 
+              color: '#4b5563'
+            }}>
+              Railing Style Reference
+            </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={railingImage} 
               alt="Railing Style Reference" 
               style={{ 
-                height: '95px', 
-                maxWidth: '150px', 
+                height: '110px', 
+                maxWidth: '180px', 
                 objectFit: 'contain', 
                 borderRadius: '4px', 
                 border: '1px solid #d1d5db',
@@ -1010,35 +1020,6 @@ export default function EditEstimatePage() {
                 backgroundColor: 'white'
               }} 
             />
-            <div>
-              <span style={{ 
-                fontSize: '0.75rem', 
-                fontWeight: 'bold', 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.05em', 
-                color: '#4b5563', 
-                display: 'block',
-                marginBottom: '0.25rem'
-              }}>
-                Railing Style Reference
-              </span>
-              {railingsList.some(r => r.style || r.color) ? (
-                <div>
-                  {railingsList.map((r, idx) => (
-                    (r.style || r.color) && (
-                      <p key={r.id || idx} style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
-                        {r.location ? `${r.location}: ` : ''}
-                        {r.style} {r.color ? `(${r.color})` : ''}
-                      </p>
-                    )
-                  ))}
-                </div>
-              ) : (
-                <p style={{ margin: 0, fontSize: '0.8125rem', color: '#374151' }}>
-                  Selected design reference for installation
-                </p>
-              )}
-            </div>
           </div>
         )}
 
