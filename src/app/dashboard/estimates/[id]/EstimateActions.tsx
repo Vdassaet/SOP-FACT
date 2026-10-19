@@ -1,11 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function EstimateActions({ estimateId, estimateStatus }: { estimateId: string, estimateStatus: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const handlePrint = () => {
+    if (typeof window !== "undefined" && (window as any).electronAPI?.isElectron) {
+      (window as any).electronAPI.printPDF();
+    } else if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("print") === "true") {
+        const timer = setTimeout(() => {
+          handlePrint();
+        }, 300);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
 
   const handleConvert = async () => {
     if (!confirm("Are you sure you want to convert this estimate into a project?")) return;
@@ -36,12 +56,8 @@ export default function EstimateActions({ estimateId, estimateStatus }: { estima
     router.push(`/dashboard/estimates/${estimateId}/edit`);
   };
 
-  const handlePrint = () => {
-    router.push(`/dashboard/estimates/${estimateId}/edit?print=true`);
-  };
-
   return (
-    <div style={{ display: 'flex', gap: '1rem' }}>
+    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
       <button 
         type="button"
         onClick={handlePrint}

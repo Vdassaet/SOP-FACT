@@ -30,16 +30,16 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
   const balanceDue = Math.max(0, invoice.total - amountPaid);
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="print-block" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       
       {/* Print Header (Logo) */}
       <div className="print-only" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="NJ Fence Logo" style={{ height: '80px', objectFit: 'contain' }} />
+        <img src="/logo.svg" alt="NJ Fence Logo" loading="eager" decoding="sync" style={{ height: '80px', objectFit: 'contain' }} />
       </div>
 
       {/* Header Actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }} className="hide-on-print">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }} className="hide-on-print">
         <div>
           <Link href="/dashboard/invoices" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>
             &larr; Back to Invoices
@@ -75,7 +75,7 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           {/* Info Card */}
           <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Customer Information</h2>
-            <div className="grid-responsive" style={{ gap: '1rem' }}>
+            <div className="grid-responsive print-two-col" style={{ gap: '1rem' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Customer</p>
                 <p style={{ margin: '0.25rem 0 1rem 0' }}>{invoice.customer?.name} {invoice.customer?.company ? `(${invoice.customer.company})` : ''}</p>

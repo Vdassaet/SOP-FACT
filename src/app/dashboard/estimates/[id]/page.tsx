@@ -25,26 +25,54 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
   };
 
   let railingImage = "";
+  let railingsList: any[] = [];
+  let selectedFence: string | null = null;
+  let selectedRailing: string | null = null;
   try {
-    if (estimate.description && estimate.description.startsWith("{")) {
+    if (estimate.description && (estimate.description.startsWith("{") || estimate.description.startsWith("["))) {
       const parsed = JSON.parse(estimate.description);
       railingImage = parsed.railingImage || "";
+      if (Array.isArray(parsed.railingsList)) {
+        railingsList = parsed.railingsList;
+      }
+      selectedFence = parsed.selectedFence || null;
+      selectedRailing = parsed.selectedRailing || null;
     } else if (estimate.description && estimate.description.startsWith("data:image")) {
       railingImage = estimate.description;
     }
   } catch {}
 
+  if (!selectedFence && estimate.items) {
+    const fItem = estimate.items.find((it: any) =>
+      ["vinyl fence", "aluminum fence", "wood fence", "chain link"].some(f => (it.name || "").toLowerCase().includes(f))
+    );
+    if (fItem) {
+      const n = fItem.name.toLowerCase();
+      if (n.includes("vinyl")) selectedFence = "Vinyl Fence";
+      else if (n.includes("aluminum")) selectedFence = "Aluminum Fence";
+      else if (n.includes("wood")) selectedFence = "Wood Fence";
+      else if (n.includes("chain link")) selectedFence = "Chain Link";
+    }
+  }
+
+  if (!selectedRailing && estimate.items) {
+    const rItem = estimate.items.find((it: any) =>
+      ["aluminum railing", "metal railing", "pvc railing", "custom railing"].some(r => (it.name || "").toLowerCase().includes(r))
+    );
+    if (rItem) {
+      const n = rItem.name.toLowerCase();
+      if (n.includes("aluminum")) selectedRailing = "Aluminum Railing";
+      else if (n.includes("metal")) selectedRailing = "Metal Railing";
+      else if (n.includes("pvc")) selectedRailing = "PVC Railing";
+      else if (n.includes("custom")) selectedRailing = "Custom Railing";
+    }
+  }
+
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-      
-      {/* Print Header (Logo) */}
-      <div className="print-only" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="NJ Fence Logo" style={{ height: '80px', objectFit: 'contain' }} />
-      </div>
+    <div className="print-block" style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
       {/* Header Actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }} className="hide-on-print">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }} className="hide-on-print">
         <div>
           <Link href="/dashboard/estimates" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>
             &larr; Back to Estimates
@@ -70,8 +98,8 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid-responsive-2-1" style={{ gap: '2rem' }}>
+      {/* Main Grid (Screen View) */}
+      <div className="grid-responsive-2-1 hide-on-print" style={{ gap: '2rem' }}>
         
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -100,7 +128,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
           {/* Measurements Card */}
           <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Project Measurements (Specs)</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', textAlign: 'center' }}>
+            <div className="grid-cols-4-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', textAlign: 'center' }}>
               <div style={{ background: '#f9fafb', padding: '1rem', borderRadius: '6px' }}>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>Linear Feet</p>
                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{estimate.linearFeet || 0}</p>
@@ -189,6 +217,190 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
           </div>
 
         </div>
+      </div>
+
+      {/* CORPORATE PROPOSAL PDF TEMPLATE (Used when printing from phone or computer) */}
+      <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'relative', width: '100%' }}>
+        
+        {/* PAGE 1: PROPOSAL CONTENT WITH CENTERED WATERMARK */}
+        <div className="print-proposal-page" style={{ position: 'relative', width: '100%' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/logo-watermark.jpg" 
+            alt="" 
+            loading="eager"
+            decoding="sync"
+            style={{ 
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '550px', 
+              maxWidth: '80%', 
+              height: 'auto', 
+              opacity: 0.08, 
+              pointerEvents: 'none',
+              zIndex: 0
+            }} 
+          />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>NJ FENCE & RAILING</h1>
+                <p style={{ margin: 0, color: '#4b5563' }}>Professional Fencing Solutions</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#2563eb' }}>PROPOSAL</h2>
+                <p style={{ margin: 0 }}>Date: {new Date(estimate.date || estimate.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+            
+            <div className="print-two-col" style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem', marginBottom: '2rem', fontSize: '0.875rem', width: '100%' }}>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
+                <p style={{ margin: 0 }}>Customer: {estimate.customer ? `${estimate.customer.name} ${estimate.customer.company ? `(${estimate.customer.company})` : ''}` : 'N/A'}</p>
+                <p style={{ margin: 0 }}>Project Location: {estimate.installAddress || estimate.customer?.address || 'N/A'}</p>
+              </div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Project Specs:</h3>
+                <p style={{ margin: 0 }}>Type: {estimate.projectType || 'New Installation'}</p>
+                
+                {selectedFence && (estimate.linearFeet || 0) > 0 && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>Fence: {selectedFence}</p>
+                    <p style={{ margin: 0 }}>Length: {estimate.linearFeet} ft | Height: {estimate.height || 6} ft</p>
+                    {(estimate.gateCount || 0) > 0 && <p style={{ margin: 0 }}>Gates: {estimate.gateCount} ({estimate.gateWidth || 4}ft wide)</p>}
+                  </div>
+                )}
+
+                {railingsList.some(r => r.linearFeet > 0) && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing || 'Custom Railing'}</p>
+                    <p style={{ margin: 0 }}>
+                      Total Length: {railingsList.reduce((acc, r) => acc + (r.linearFeet || 0), 0)} ft ({railingsList.filter(r => r.linearFeet > 0).length} {railingsList.filter(r => r.linearFeet > 0).length === 1 ? 'section' : 'sections'} — see breakdown below)
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
+              <thead>
+                <tr style={{ background: '#f3f4f6' }}>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #d1d5db' }}>Description</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '2px solid #d1d5db' }}>Qty (FT)</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '2px solid #d1d5db' }}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {estimate.items && estimate.items.map((i: any, idx: number) => (
+                  <tr key={i.id || idx}>
+                    <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{i.name} {i.description && <span style={{color: 'gray', fontSize: '0.875rem'}}>({i.description})</span>}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>{i.quantity}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>{formatCurrency(i.total ?? (i.quantity * i.unitPrice))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
+              <div style={{ width: '300px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid black' }}>
+                  <span>TOTAL ESTIMATE:</span>
+                  <span>{formatCurrency(estimate.total)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem' }}>
+              <strong>Terms & Conditions:</strong>
+              <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
+            </div>
+
+            {/* Railing Section Breakdown */}
+            {railingsList.some(r => r.linearFeet > 0) && (
+              <div style={{ 
+                border: '1px solid #e5e7eb', 
+                borderRadius: '6px', 
+                padding: '1rem', 
+                backgroundColor: 'transparent',
+                marginBottom: '1.5rem',
+                fontSize: '0.8125rem',
+                color: '#111827',
+                pageBreakInside: 'avoid'
+              }}>
+                <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
+                  Railing Specifications: {selectedRailing || 'Aluminum Railing'}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
+                    <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
+                      <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
+                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* PAGE 2: Standalone Full-Page Railing Style Reference (Centered on its own page, no watermark) */}
+        {railingImage && (
+          <div 
+            className="print-style-page"
+            style={{ 
+              display: 'block',
+              pageBreakBefore: 'always', 
+              breakBefore: 'page',
+              pageBreakInside: 'avoid',
+              breakInside: 'avoid',
+              textAlign: 'center',
+              padding: '1in 1rem 0.5in 1rem',
+              position: 'relative',
+              zIndex: 2,
+              backgroundColor: 'white',
+              width: '100%'
+            }}
+          >
+            <h2 style={{ 
+              fontSize: '1.25rem', 
+              fontWeight: 'bold', 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.08em', 
+              color: '#1f2937',
+              marginBottom: '1.5rem'
+            }}>
+              Railing Style Reference
+            </h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={railingImage} 
+              alt="Railing Style Reference" 
+              loading="eager"
+              decoding="sync"
+              style={{ 
+                display: 'block',
+                margin: '0 auto',
+                maxHeight: '6.2in', 
+                maxWidth: '85%', 
+                width: 'auto',
+                objectFit: 'contain', 
+                borderRadius: '8px', 
+                border: '1px solid #d1d5db',
+                padding: '8px',
+                backgroundColor: 'white',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }} 
+            />
+            {selectedRailing && (
+              <p style={{ marginTop: '1.25rem', fontSize: '0.9375rem', fontWeight: '600', color: '#4b5563' }}>
+                {selectedRailing}
+              </p>
+            )}
+          </div>
+        )}
+
       </div>
 
     </div>

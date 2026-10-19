@@ -57,9 +57,9 @@ export default function ContractDetailPage() {
   };
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 0' }}>
+    <div className="print-block" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 0' }}>
       {/* Non-printable Header */}
-      <div className="print-hide" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div className="print-hide hide-on-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <Link href="/dashboard/contracts" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: '500' }}>
           &larr; Back to Contracts
         </Link>
@@ -73,7 +73,8 @@ export default function ContractDetailPage() {
 
       {/* Printable Document Area */}
       <div style={{ backgroundColor: 'white', padding: '3rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
-        <img src="/logo-watermark.jpg" alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-watermark.jpg" alt="" loading="eager" decoding="sync" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
         
         {/* Document Header */}
@@ -92,7 +93,7 @@ export default function ContractDetailPage() {
         {/* Customer Info */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Client Information</h3>
-          <div className="grid-responsive" style={{ gap: '1rem' }}>
+          <div className="grid-responsive print-two-col" style={{ gap: '1rem' }}>
             <div>
               <p style={{ margin: '0 0 0.25rem 0' }}><strong>Name:</strong> {contract.customer.name}</p>
               {contract.customer.company && <p style={{ margin: '0 0 0.25rem 0' }}><strong>Company:</strong> {contract.customer.company}</p>}
@@ -108,9 +109,9 @@ export default function ContractDetailPage() {
         {/* Schedule Info */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Project Schedule</h3>
-          <div className="grid-responsive" style={{ gap: '1rem' }}>
-            <p style={{ margin: 0 }}><strong>Estimated Start Date:</strong> {contract.startDate ? new Date(contract.startDate).toLocaleDateString() : 'TBD'}</p>
-            <p style={{ margin: 0 }}><strong>Estimated End Date:</strong> {contract.endDate ? new Date(contract.endDate).toLocaleDateString() : 'TBD'}</p>
+          <div className="grid-responsive print-two-col" style={{ gap: '1rem' }}>
+            <div><p style={{ margin: 0 }}><strong>Estimated Start Date:</strong> {contract.startDate ? new Date(contract.startDate).toLocaleDateString() : 'TBD'}</p></div>
+            <div><p style={{ margin: 0 }}><strong>Estimated End Date:</strong> {contract.endDate ? new Date(contract.endDate).toLocaleDateString() : 'TBD'}</p></div>
           </div>
         </div>
 

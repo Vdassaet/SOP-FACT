@@ -68,7 +68,7 @@ export default async function EstimatesPage() {
                       View
                     </Link>
                     <Link 
-                      href={`/dashboard/estimates/${est.id}/edit?print=true`} 
+                      href={`/dashboard/estimates/${est.id}?print=true`} 
                       style={{ color: '#059669', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}
                     >
                       Print PDF

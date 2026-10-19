@@ -30,6 +30,7 @@ export default function EditEstimatePage() {
   
   // States
   const [customers, setCustomers] = useState<any[]>([]);
+  const [loadedCustomer, setLoadedCustomer] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [railingImage, setRailingImage] = useState<string>("");
@@ -241,6 +242,7 @@ export default function EditEstimatePage() {
 
             if (detectedFence) setSelectedFence(detectedFence);
             if (detectedRailing) setSelectedRailing(detectedRailing);
+            if (data.customer) setLoadedCustomer(data.customer);
 
             setFormData({
               customerId: data.customerId || "",
@@ -462,10 +464,10 @@ export default function EditEstimatePage() {
   };
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+    <div className="estimate-builder-layout print-block" style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
       
       {/* LEFT COLUMN - FORM */}
-      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem' }} className="hide-on-print">
+      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }} className="hide-on-print">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827' }}>Edit Estimate</h1>
         </div>
@@ -491,7 +493,7 @@ export default function EditEstimatePage() {
         {/* 2. Detalles del Proyecto */}
         <section style={cardStyle}>
           <h2 style={sectionTitle}>Project Details</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+          <div className="grid-cols-3-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Property Type</label>
               <select value={formData.propertyType} onChange={(e) => setFormData({...formData, propertyType: e.target.value})} style={inputStyle}>
@@ -566,7 +568,7 @@ export default function EditEstimatePage() {
         {/* 4. Mediciones */}
         <section style={cardStyle}>
           <h2 style={sectionTitle}>Project Measurements</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+          <div className="grid-cols-4-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
             <div><label style={labelStyle}>Linear Feet</label><input type="number" step="any" value={measurements.linearFeet || ""} onChange={(e) => handleMeasurementChange('linearFeet', e.target.value)} style={inputStyle} /></div>
             <div><label style={labelStyle}>Price per Linear Foot ($)</label><input type="number" step="any" value={measurements.pricePerLinearFoot || ""} onChange={(e) => handleMeasurementChange('pricePerLinearFoot', e.target.value)} style={{...inputStyle, borderColor: '#3b82f6', backgroundColor: '#eff6ff'}} /></div>
             <div><label style={labelStyle}>Height (ft)</label><input type="number" step="any" value={measurements.height || ""} onChange={(e) => handleMeasurementChange('height', e.target.value)} style={inputStyle} /></div>
@@ -837,7 +839,7 @@ export default function EditEstimatePage() {
       </div>
 
       {/* RIGHT COLUMN - STICKY SUMMARY */}
-      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className="hide-on-print">
+      <div style={{ width: '400px', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className="hide-on-print estimate-builder-sidebar">
         <div style={{ ...cardStyle, background: '#111827', color: 'white' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: 'white' }}>Billing Summary</h2>
           
@@ -899,178 +901,158 @@ export default function EditEstimatePage() {
           #printable-pdf {
             position: static !important;
             width: 100% !important;
-          }
-          .print-watermark-wrapper {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            pointer-events: none !important;
-            z-index: 0 !important;
+            display: block !important;
           }
         }
       `}} />
 
       {/* HIDDEN PRINT TEMPLATE */}
       <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'relative', width: '100%' }}>
-        {/* Centered Watermark Logo for Print (Stays centered in the middle of each printed page) */}
-        <div 
-          className="print-watermark-wrapper"
-          style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            right: 0, 
-            bottom: 0, 
-            width: '100%', 
-            height: '100%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            pointerEvents: 'none', 
-            zIndex: 0 
-          }}
-        >
+        
+        {/* PAGE 1: PROPOSAL CONTENT WITH CENTERED WATERMARK */}
+        <div className="print-proposal-page" style={{ position: 'relative', width: '100%' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/logo-watermark.jpg" 
             alt="" 
+            loading="eager"
+            decoding="sync"
             style={{ 
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               width: '550px', 
               maxWidth: '80%', 
               height: 'auto', 
               opacity: 0.08, 
-              pointerEvents: 'none' 
+              pointerEvents: 'none',
+              zIndex: 0
             }} 
           />
-        </div>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>NJ FENCE & RAILING</h1>
-            <p style={{ margin: 0, color: '#4b5563' }}>Professional Fencing Solutions</p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#2563eb' }}>PROPOSAL</h2>
-            <p style={{ margin: 0 }}>Date: {new Date().toLocaleDateString()}</p>
-          </div>
-        </div>
-        
-        <div style={{ display: 'flex', gap: '4rem', marginBottom: '2rem' }}>
-          <div className="grid-responsive" style={{ gap: '2rem', marginBottom: '2rem', fontSize: '0.875rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
-              {(() => {
-                const c = customers.find(c => c.id === formData.customerId);
-                return <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>;
-              })()}
-              <p style={{ margin: 0 }}>Project Location: {formData.installAddress || 'N/A'}</p>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>NJ FENCE & RAILING</h1>
+                <p style={{ margin: 0, color: '#4b5563' }}>Professional Fencing Solutions</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#2563eb' }}>PROPOSAL</h2>
+                <p style={{ margin: 0 }}>Date: {new Date().toLocaleDateString()}</p>
+              </div>
             </div>
-            <div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Project Specs:</h3>
-              <p style={{ margin: 0 }}>Type: {formData.projectType}</p>
-              
-              {selectedFence && measurements.linearFeet > 0 && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <p style={{ margin: 0, fontWeight: 'bold' }}>Fence: {selectedFence}</p>
-                  <p style={{ margin: 0 }}>Length: {measurements.linearFeet} ft | Height: {measurements.height} ft</p>
-                  {measurements.gateCount > 0 && <p style={{ margin: 0 }}>Gates: {measurements.gateCount} ({measurements.gateWidth}ft wide)</p>}
+            
+            <div className="print-two-col" style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem', marginBottom: '2rem', fontSize: '0.875rem', width: '100%' }}>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
+                {(() => {
+                  const c = customers.find(c => c.id === formData.customerId) || (loadedCustomer?.id === formData.customerId ? loadedCustomer : loadedCustomer);
+                  return <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>;
+                })()}
+                <p style={{ margin: 0 }}>Project Location: {formData.installAddress || loadedCustomer?.address || 'N/A'}</p>
+              </div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Project Specs:</h3>
+                <p style={{ margin: 0 }}>Type: {formData.projectType}</p>
+                
+                {selectedFence && measurements.linearFeet > 0 && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>Fence: {selectedFence}</p>
+                    <p style={{ margin: 0 }}>Length: {measurements.linearFeet} ft | Height: {measurements.height} ft</p>
+                    {measurements.gateCount > 0 && <p style={{ margin: 0 }}>Gates: {measurements.gateCount} ({measurements.gateWidth}ft wide)</p>}
+                  </div>
+                )}
+
+                {railingsList.some(r => r.linearFeet > 0) && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing || 'Custom Railing'}</p>
+                    <p style={{ margin: 0 }}>
+                      Total Length: {railingsList.reduce((acc, r) => acc + (r.linearFeet || 0), 0)} ft ({railingsList.filter(r => r.linearFeet > 0).length} {railingsList.filter(r => r.linearFeet > 0).length === 1 ? 'section' : 'sections'} — see breakdown below)
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
+              <thead>
+                <tr style={{ background: '#f3f4f6' }}>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #d1d5db' }}>Description</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '2px solid #d1d5db' }}>Qty (FT)</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '2px solid #d1d5db' }}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allItems.map((i, idx) => (
+                  <tr key={idx}>
+                    <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{i.name} {i.description && <span style={{color: 'gray', fontSize: '0.875rem'}}>({i.description})</span>}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>{i.quantity}</td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>${(i.quantity * i.unitPrice).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
+              <div style={{ width: '300px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid black' }}>
+                  <span>TOTAL ESTIMATE:</span>
+                  <span>${sellingPrice.toFixed(2)}</span>
                 </div>
-              )}
-
-              {railingsList.some(r => r.linearFeet > 0) && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <p style={{ margin: 0, fontWeight: 'bold' }}>Railing: {selectedRailing || 'Custom Railing'}</p>
-                  <p style={{ margin: 0 }}>
-                    Total Length: {railingsList.reduce((acc, r) => acc + (r.linearFeet || 0), 0)} ft ({railingsList.filter(r => r.linearFeet > 0).length} {railingsList.filter(r => r.linearFeet > 0).length === 1 ? 'section' : 'sections'} — see breakdown below)
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
-          <thead>
-            <tr style={{ background: '#f3f4f6' }}>
-              <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #d1d5db' }}>Description</th>
-              <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '2px solid #d1d5db' }}>Qty (FT)</th>
-              <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '2px solid #d1d5db' }}>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allItems.map((i, idx) => (
-              <tr key={idx}>
-                <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{i.name} {i.description && <span style={{color: 'gray', fontSize: '0.875rem'}}>({i.description})</span>}</td>
-                <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>{i.quantity}</td>
-                <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>${(i.quantity * i.unitPrice).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
-          <div style={{ width: '300px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid black' }}>
-              <span>TOTAL ESTIMATE:</span>
-              <span>${sellingPrice.toFixed(2)}</span>
+            <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem' }}>
+              <strong>Terms & Conditions:</strong>
+              <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
             </div>
-          </div>
-        </div>
 
-        <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem' }}>
-          <strong>Terms & Conditions:</strong>
-          <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
-        </div>
-
-        {/* Railing Section Breakdown */}
-        {railingsList.some(r => r.linearFeet > 0) && (
-          <div style={{ 
-            border: '1px solid #e5e7eb', 
-            borderRadius: '6px', 
-            padding: '1rem', 
-            backgroundColor: '#ffffff',
-            marginBottom: '1.5rem',
-            fontSize: '0.8125rem',
-            color: '#111827',
-            pageBreakInside: 'avoid'
-          }}>
-            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
-              Railing Specifications: {selectedRailing || 'Aluminum Railing'}
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-              {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
-                <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
-                  <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
-                  {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
+            {/* Railing Section Breakdown */}
+            {railingsList.some(r => r.linearFeet > 0) && (
+              <div style={{ 
+                border: '1px solid #e5e7eb', 
+                borderRadius: '6px', 
+                padding: '1rem', 
+                backgroundColor: 'transparent',
+                marginBottom: '1.5rem',
+                fontSize: '0.8125rem',
+                color: '#111827',
+                pageBreakInside: 'avoid'
+              }}>
+                <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', fontSize: '0.875rem' }}>
+                  Railing Specifications: {selectedRailing || 'Aluminum Railing'}
                 </p>
-              ))}
-            </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  {railingsList.filter(r => r.linearFeet > 0).map((r, idx, arr) => (
+                    <p key={r.id || idx} style={{ margin: 0, lineHeight: 1.4 }}>
+                      <strong>{r.location ? `${r.location}: ` : (arr.length > 1 ? `Section ${idx + 1}: ` : '')}</strong>
+                      {r.linearFeet} ft {r.style ? `| ${r.style}` : ''} {r.color ? `(${r.color})` : ''}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
-        {/* Standalone Full-Page Railing Style Reference (Centered on its own page) */}
+        {/* PAGE 2: Standalone Full-Page Railing Style Reference (Centered on its own page, no watermark) */}
         {railingImage && (
-          <div style={{ 
-            pageBreakBefore: 'always', 
-            breakBefore: 'page',
-            minHeight: '8.5in',
-            display: 'flex', 
-            flexDirection: 'column', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            textAlign: 'center',
-            padding: '2rem 1rem',
-            position: 'relative',
-            zIndex: 2,
-            backgroundColor: 'white'
-          }}>
+          <div 
+            className="print-style-page"
+            style={{ 
+              display: 'block',
+              pageBreakBefore: 'always', 
+              breakBefore: 'page',
+              pageBreakInside: 'avoid',
+              breakInside: 'avoid',
+              textAlign: 'center',
+              padding: '1in 1rem 0.5in 1rem',
+              position: 'relative',
+              zIndex: 2,
+              backgroundColor: 'white',
+              width: '100%'
+            }}
+          >
             <h2 style={{ 
               fontSize: '1.25rem', 
               fontWeight: 'bold', 
@@ -1085,8 +1067,12 @@ export default function EditEstimatePage() {
             <img 
               src={railingImage} 
               alt="Railing Style Reference" 
+              loading="eager"
+              decoding="sync"
               style={{ 
-                maxHeight: '6.5in', 
+                display: 'block',
+                margin: '0 auto',
+                maxHeight: '6.2in', 
                 maxWidth: '85%', 
                 width: 'auto',
                 objectFit: 'contain', 
@@ -1105,7 +1091,6 @@ export default function EditEstimatePage() {
           </div>
         )}
 
-        </div>
       </div>
 
     </div>

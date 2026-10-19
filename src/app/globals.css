@@ -35,8 +35,18 @@ a {
   text-decoration: none;
 }
 
-.print-only, .print-only-block {
-  display: none !important;
+@media screen {
+  .print-only, .print-only-block {
+    position: fixed !important;
+    left: -9999px !important;
+    top: 0 !important;
+    width: 800px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -9999 !important;
+  }
 }
 
 /* Print Styles */
@@ -47,8 +57,12 @@ a {
     print-color-adjust: exact !important;
     background-color: white !important;
     color: black !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: visible !important;
     display: block !important;
     position: static !important;
@@ -64,25 +78,65 @@ a {
     margin-bottom: 1.5rem !important;
   }
 
+  .print-two-col {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 2rem !important;
+    width: 100% !important;
+  }
+
+  .print-two-col > div {
+    flex: 1 1 48% !important;
+    width: 48% !important;
+    margin-bottom: 0 !important;
+  }
+
   @page {
     margin: 0.5cm;
   }
   
-  .hide-on-print {
+  .hide-on-print, .print-hide {
     display: none !important;
   }
   
   .print-only {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
     display: flex !important;
   }
 
   .print-only-block {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
     display: block !important;
   }
   
-  .print-block {
+  .print-block, .estimate-builder-layout {
     display: block !important;
     width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .table-responsive {
+    overflow: visible !important;
   }
 
   .print-main-content {
@@ -90,18 +144,28 @@ a {
     height: auto !important;
     display: block !important;
     position: static !important;
+    width: 100% !important;
   }
 
   .print-main-content-inner {
     overflow: visible !important;
     padding: 0 !important;
+    margin: 0 !important;
     display: block !important;
     position: static !important;
+    width: 100% !important;
   }
 
-  /* Prevent page breaks inside important sections */
-  .print-block, table, tr, .print-block > div {
-    /* page-break-inside: avoid !important; */
+  .print-style-page {
+    display: block !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    text-align: center !important;
+    width: 100% !important;
+    padding: 1in 1rem 0.5in 1rem !important;
+    background-color: white !important;
   }
 
   body {
@@ -167,7 +231,7 @@ a {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .sidebar {
     position: fixed;
     top: 0;
@@ -205,5 +269,22 @@ a {
   
   .dashboard-main-content {
     padding: 1rem !important;
+  }
+
+  .estimate-builder-layout {
+    flex-direction: column !important;
+  }
+
+  .estimate-builder-sidebar {
+    width: 100% !important;
+    position: static !important;
+  }
+
+  .grid-cols-3-responsive {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-4-responsive {
+    grid-template-columns: 1fr 1fr !important;
   }
 }
