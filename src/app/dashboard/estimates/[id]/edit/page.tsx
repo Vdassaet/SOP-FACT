@@ -22,6 +22,12 @@ type RailingItem = {
   color: string;
 };
 
+interface EstimateImage {
+  id: string;
+  url: string;
+  label: string;
+}
+
 // --- Main Component ---
 export default function EditEstimatePage() {
   const router = useRouter();
@@ -33,7 +39,8 @@ export default function EditEstimatePage() {
   const [loadedCustomer, setLoadedCustomer] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
-  const [railingImage, setRailingImage] = useState<string>("");
+  const [images, setImages] = useState<EstimateImage[]>([]);
+  const railingImage = images[0]?.url || "";
 
   // Form Data
   const [formData, setFormData] = useState({
@@ -182,6 +189,7 @@ export default function EditEstimatePage() {
           if (data && !data.error) {
             let parsedNotes = data.description || "";
             let parsedImage = "";
+            let parsedImages: any[] = [];
             let parsed: any = {};
             try {
               if (data.description && (data.description.startsWith("{") || data.description.startsWith("["))) {
@@ -189,6 +197,9 @@ export default function EditEstimatePage() {
                 if (parsed && typeof parsed === "object") {
                   parsedNotes = parsed.notes || "";
                   parsedImage = parsed.railingImage || "";
+                  if (Array.isArray(parsed.images) && parsed.images.length > 0) {
+                    parsedImages = parsed.images;
+                  }
                   if (Array.isArray(parsed.railingsList) && parsed.railingsList.length > 0) {
                     setRailingsList(parsed.railingsList);
                   }
@@ -201,8 +212,10 @@ export default function EditEstimatePage() {
               parsedNotes = data.description || "";
             }
 
-            if (parsedImage) {
-              setRailingImage(parsedImage);
+            if (parsedImages.length > 0) {
+              setImages(parsedImages);
+            } else if (parsedImage) {
+              setImages([{ id: "1", url: parsedImage, label: "Railing Style Reference" }]);
             }
 
             // Restore catalog selections and detect from items if legacy
@@ -367,44 +380,72 @@ export default function EditEstimatePage() {
     setRailingsList(prev => prev.filter(item => item.id !== id));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImageFile = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          // Optimize to max 1600px dimension and convert to JPEG for crisp full-page printing with minimal payload
+          const maxDim = 1600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL("image/jpeg", 0.85);
+            resolve(compressed);
+          } else {
+            resolve(event.target?.result as string);
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const compressed = await compressImageFile(file);
+    const defaultLabel = images.length === 0 ? "Railing Style Reference" : `Reference Image ${images.length + 1}`;
+    setImages(prev => [...prev, {
+      id: Date.now().toString(),
+      url: compressed,
+      label: defaultLabel
+    }]);
+    e.target.value = "";
+  };
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        // Optimize to max 1600px dimension and convert to JPEG for crisp full-page printing with minimal payload
-        const maxDim = 1600;
-        let width = img.width;
-        let height = img.height;
+  const handleUpdateImageLabel = (id: string, label: string) => {
+    setImages(prev => prev.map(img => img.id === id ? { ...img, label } : img));
+  };
 
-        if (width > maxDim || height > maxDim) {
-          if (width > height) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-        }
+  const handleReplaceImage = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const compressed = await compressImageFile(file);
+    setImages(prev => prev.map(img => img.id === id ? { ...img, url: compressed } : img));
+    e.target.value = "";
+  };
 
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const compressed = canvas.toDataURL("image/jpeg", 0.85);
-          setRailingImage(compressed);
-        } else {
-          setRailingImage(event.target?.result as string);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+  const handleRemoveImage = (id: string) => {
+    setImages(prev => prev.filter(img => img.id !== id));
   };
 
   const addLineItem = () => setLineItems([...lineItems, { name: "", description: "", quantity: 1, unitPrice: 0 }]);
@@ -424,6 +465,7 @@ export default function EditEstimatePage() {
       const descriptionPayload = JSON.stringify({
         notes: formData.notes || "",
         railingImage: railingImage,
+        images: images,
         railingsList: railingsList,
         selectedFence: selectedFence,
         selectedRailing: selectedRailing,
@@ -727,28 +769,29 @@ export default function EditEstimatePage() {
           </div>
         </section>
 
-        {/* 5b. Foto del Estilo de Barandilla */}
+        {/* 5b. Project & Style Images */}
         <section style={cardStyle}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2 style={{ ...sectionTitle, borderBottom: 'none', paddingBottom: 0, marginBottom: 0 }}>
-              Railing Style Image (PDF Reference)
-            </h2>
-            {railingImage && (
-              <button 
-                type="button" 
-                onClick={() => setRailingImage("")}
-                style={{ color: '#dc2626', background: 'none', border: 'none', fontSize: '0.875rem', cursor: 'pointer', fontWeight: '500' }}
-              >
-                ✕ Remove Image
-              </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div>
+              <h2 style={{ ...sectionTitle, borderBottom: 'none', paddingBottom: 0, marginBottom: '0.25rem' }}>
+                Project & Style Images (PDF Reference)
+              </h2>
+              <p style={{ margin: 0, fontSize: '0.8125rem', color: '#6b7280' }}>
+                Upload photos of railing styles, fence layouts, or site references. Each image prints on its own full page at the end of the proposal PDF with your custom label.
+              </p>
+            </div>
+            {images.length > 0 && (
+              <span style={{ fontSize: '0.8125rem', backgroundColor: '#ecfdf5', color: '#065f46', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontWeight: '600' }}>
+                {images.length} {images.length === 1 ? 'image' : 'images'} attached
+              </span>
             )}
           </div>
 
-          {!railingImage ? (
+          {images.length === 0 ? (
             <div style={{
               border: '2px dashed #d1d5db',
               borderRadius: '8px',
-              padding: '1.25rem',
+              padding: '1.5rem',
               textAlign: 'center',
               backgroundColor: '#f9fafb'
             }}>
@@ -757,7 +800,7 @@ export default function EditEstimatePage() {
                 id="railing-image-upload" 
                 accept="image/*" 
                 style={{ display: 'none' }} 
-                onChange={handleImageUpload} 
+                onChange={handleAddImage} 
               />
               <label 
                 htmlFor="railing-image-upload" 
@@ -782,42 +825,115 @@ export default function EditEstimatePage() {
               </p>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={railingImage} 
-                alt="Railing style preview" 
-                style={{ height: '80px', width: 'auto', maxWidth: '120px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #d1d5db', backgroundColor: 'white' }} 
-              />
-              <div style={{ flex: 1 }}>
-                <p style={{ margin: 0, fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
-                  {railingsList.find(r => r.style)?.style ? `Style: ${railingsList.find(r => r.style)?.style}` : "Railing style selected"}
-                </p>
-                <p style={{ margin: '0.25rem 0 0.5rem 0', fontSize: '0.75rem', color: '#4b5563' }}>
-                  ✓ Included at the end of the proposal PDF.
-                </p>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <input 
-                    type="file" 
-                    id="railing-image-change" 
-                    accept="image/*" 
-                    style={{ display: 'none' }} 
-                    onChange={handleImageUpload} 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {images.map((img, idx) => (
+                <div 
+                  key={img.id}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '1.25rem', 
+                    backgroundColor: '#f9fafb', 
+                    padding: '1rem', 
+                    borderRadius: '8px', 
+                    border: '1px solid #e5e7eb',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  {/* Image Preview */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={img.url} 
+                    alt={img.label || `Image ${idx + 1}`} 
+                    style={{ 
+                      height: '85px', 
+                      width: '110px', 
+                      objectFit: 'cover', 
+                      borderRadius: '6px', 
+                      border: '1px solid #d1d5db', 
+                      backgroundColor: 'white' 
+                    }} 
                   />
-                  <label 
-                    htmlFor="railing-image-change" 
-                    style={{ fontSize: '0.8125rem', color: '#2563eb', cursor: 'pointer', fontWeight: '500', textDecoration: 'underline' }}
-                  >
-                    Change Image
-                  </label>
-                  <button 
-                    type="button" 
-                    onClick={() => setRailingImage("")}
-                    style={{ fontSize: '0.8125rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' }}
-                  >
-                    Remove
-                  </button>
+
+                  {/* Label & Details */}
+                  <div style={{ flex: '1 1 260px' }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', color: '#374151', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                      Custom Label / Title for PDF #{idx + 1}
+                    </label>
+                    <input 
+                      type="text" 
+                      value={img.label}
+                      onChange={(e) => handleUpdateImageLabel(img.id, e.target.value)}
+                      placeholder="e.g. Railing Style Reference, Front Porch, Gate Detail..."
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.5rem 0.75rem', 
+                        borderRadius: '6px', 
+                        border: '1px solid #cbd5e1', 
+                        fontSize: '0.875rem', 
+                        fontWeight: '500',
+                        color: '#111827',
+                        backgroundColor: 'white'
+                      }} 
+                    />
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>
+                      ✓ Prints on its own full page at the end of the proposal PDF.
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end', marginLeft: 'auto' }}>
+                    <input 
+                      type="file" 
+                      id={`replace-img-${img.id}`} 
+                      accept="image/*" 
+                      style={{ display: 'none' }} 
+                      onChange={(e) => handleReplaceImage(img.id, e)} 
+                    />
+                    <label 
+                      htmlFor={`replace-img-${img.id}`} 
+                      style={{ fontSize: '0.8125rem', color: '#2563eb', cursor: 'pointer', fontWeight: '500', textDecoration: 'underline' }}
+                    >
+                      Change Photo
+                    </label>
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveImage(img.id)}
+                      style={{ fontSize: '0.8125rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' }}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
+              ))}
+
+              {/* Add Another Image Button */}
+              <div style={{ marginTop: '0.5rem' }}>
+                <input 
+                  type="file" 
+                  id="edit-add-more-images" 
+                  accept="image/*" 
+                  style={{ display: 'none' }} 
+                  onChange={handleAddImage} 
+                />
+                <label 
+                  htmlFor="edit-add-more-images" 
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem', 
+                    backgroundColor: 'white', 
+                    color: '#2563eb', 
+                    border: '1px dashed #2563eb',
+                    padding: '0.5rem 1rem', 
+                    borderRadius: '6px', 
+                    fontWeight: '600', 
+                    fontSize: '0.875rem', 
+                    cursor: 'pointer'
+                  }}
+                >
+                  + Add Another Image
+                </label>
               </div>
             </div>
           )}
@@ -864,10 +980,24 @@ export default function EditEstimatePage() {
             🖨️ Generate Corporate PDF
           </button>
 
-          {railingImage ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.625rem 0.75rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '6px', fontSize: '0.8125rem', color: '#065f46' }}>
-              <span>📷 Style image attached</span>
-              <button type="button" onClick={() => setRailingImage("")} style={{ marginLeft: 'auto', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+          {images.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.625rem 0.75rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8125rem', color: '#065f46', fontWeight: '600' }}>
+                <span>📷 {images.length} {images.length === 1 ? 'image' : 'images'} attached</span>
+                <input 
+                  type="file" 
+                  id="edit-summary-add-more" 
+                  accept="image/*" 
+                  style={{ display: 'none' }} 
+                  onChange={handleAddImage} 
+                />
+                <label 
+                  htmlFor="edit-summary-add-more" 
+                  style={{ color: '#2563eb', cursor: 'pointer', textDecoration: 'underline', fontWeight: '500' }}
+                >
+                  + Add
+                </label>
+              </div>
             </div>
           ) : (
             <div>
@@ -876,13 +1006,13 @@ export default function EditEstimatePage() {
                 id="summary-railing-upload" 
                 accept="image/*" 
                 style={{ display: 'none' }} 
-                onChange={handleImageUpload} 
+                onChange={handleAddImage} 
               />
               <label 
                 htmlFor="summary-railing-upload" 
                 style={{ ...btnStyle, display: 'block', background: 'white', border: '1px dashed #9ca3af', color: '#374151', fontSize: '0.875rem', padding: '0.75rem', cursor: 'pointer' }}
               >
-                + Add Style Image to PDF
+                + Add Image to PDF
               </label>
             </div>
           )}
@@ -1055,9 +1185,10 @@ export default function EditEstimatePage() {
           </div>
         </div>
 
-        {/* PAGE 2: Standalone Full-Page Railing Style Reference (Centered on its own page, no watermark) */}
-        {railingImage && (
+        {/* STANDALONE FULL-PAGE REFERENCE IMAGES (Centered on their own page, no watermark) */}
+        {images && images.length > 0 && images.map((img, idx) => (
           <div 
+            key={img.id || idx}
             className="print-style-page"
             style={{ 
               display: 'block',
@@ -1081,12 +1212,12 @@ export default function EditEstimatePage() {
               color: '#1f2937',
               marginBottom: '1.5rem'
             }}>
-              Railing Style Reference
+              {img.label || `Reference Image ${idx + 1}`}
             </h2>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src={railingImage} 
-              alt="Railing Style Reference" 
+              src={img.url} 
+              alt={img.label || `Reference Image ${idx + 1}`} 
               loading="eager"
               decoding="sync"
               style={{ 
@@ -1103,13 +1234,13 @@ export default function EditEstimatePage() {
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
               }} 
             />
-            {selectedRailing && (
+            {idx === 0 && selectedRailing && (
               <p style={{ marginTop: '1.25rem', fontSize: '0.9375rem', fontWeight: '600', color: '#4b5563' }}>
                 {selectedRailing}
               </p>
             )}
           </div>
-        )}
+        ))}
 
       </div>
 

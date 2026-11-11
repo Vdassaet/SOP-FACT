@@ -25,6 +25,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
   };
 
   let railingImage = "";
+  let imagesList: Array<{ id?: string; url: string; label?: string }> = [];
   let railingsList: any[] = [];
   let selectedFence: string | null = null;
   let selectedRailing: string | null = null;
@@ -32,6 +33,9 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
     if (estimate.description && (estimate.description.startsWith("{") || estimate.description.startsWith("["))) {
       const parsed = JSON.parse(estimate.description);
       railingImage = parsed.railingImage || "";
+      if (Array.isArray(parsed.images) && parsed.images.length > 0) {
+        imagesList = parsed.images;
+      }
       if (Array.isArray(parsed.railingsList)) {
         railingsList = parsed.railingsList;
       }
@@ -41,6 +45,10 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
       railingImage = estimate.description;
     }
   } catch {}
+
+  if (imagesList.length === 0 && railingImage) {
+    imagesList = [{ id: "1", url: railingImage, label: "Railing Style Reference" }];
+  }
 
   if (!selectedFence && estimate.items) {
     const fItem = estimate.items.find((it: any) =>
@@ -183,20 +191,26 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
             </div>
           </div>
 
-          {/* Railing Style Image Card if present */}
-          {railingImage && (
+          {/* Project Reference Images Card if present */}
+          {imagesList && imagesList.length > 0 && (
             <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Railing Style Reference</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={railingImage} 
-                  alt="Railing Style" 
-                  style={{ height: '110px', width: 'auto', maxWidth: '160px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #d1d5db', padding: '4px', backgroundColor: '#f9fafb' }} 
-                />
-                <p style={{ margin: 0, fontSize: '0.875rem', color: '#4b5563' }}>
-                  Model and design selected for railing installation in this estimate.
-                </p>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                Project Reference Images ({imagesList.length})
+              </h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                {imagesList.map((img, idx) => (
+                  <div key={img.id || idx} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '0.75rem', backgroundColor: '#f9fafb', textAlign: 'center' }}>
+                    <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
+                      {img.label || `Reference Image ${idx + 1}`}
+                    </p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={img.url} 
+                      alt={img.label || `Reference Image ${idx + 1}`} 
+                      style={{ height: '140px', width: '100%', objectFit: 'contain', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: 'white', padding: '4px' }} 
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -365,9 +379,10 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
           </div>
         </div>
 
-        {/* PAGE 2: Standalone Full-Page Railing Style Reference (Centered on its own page, no watermark) */}
-        {railingImage && (
+        {/* STANDALONE FULL-PAGE REFERENCE IMAGES (Centered on their own page, no watermark) */}
+        {imagesList && imagesList.length > 0 && imagesList.map((img, idx) => (
           <div 
+            key={img.id || idx}
             className="print-style-page"
             style={{ 
               display: 'block',
@@ -391,12 +406,12 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
               color: '#1f2937',
               marginBottom: '1.5rem'
             }}>
-              Railing Style Reference
+              {img.label || `Reference Image ${idx + 1}`}
             </h2>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src={railingImage} 
-              alt="Railing Style Reference" 
+              src={img.url} 
+              alt={img.label || `Reference Image ${idx + 1}`} 
               loading="eager"
               decoding="sync"
               style={{ 
@@ -413,13 +428,13 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
               }} 
             />
-            {selectedRailing && (
+            {idx === 0 && selectedRailing && (
               <p style={{ marginTop: '1.25rem', fontSize: '0.9375rem', fontWeight: '600', color: '#4b5563' }}>
                 {selectedRailing}
               </p>
             )}
           </div>
-        )}
+        ))}
 
       </div>
 
