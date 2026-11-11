@@ -1023,7 +1023,7 @@ export default function EditEstimatePage() {
                 1. <strong>Estimate Validity:</strong> This proposal is valid for 30 days from the date of issuance.
               </p>
               <p style={{ margin: 0 }}>
-                2. <strong>Deposit Requirement:</strong> A 50% deposit of the total project cost is required to approve the proposal, confirm the project, and begin processing the order.
+                2. <strong>Deposit Requirement:</strong> A 50% deposit is required to approve the project and begin work.
               </p>
             </div>
 
