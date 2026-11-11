@@ -73,8 +73,39 @@ export default function ContractDetailPage() {
 
       {/* Printable Document Area */}
       <div style={{ backgroundColor: 'white', padding: '3rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-watermark.jpg" alt="" loading="eager" decoding="sync" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', maxWidth: '80%', height: 'auto', opacity: 0.1, zIndex: 0, pointerEvents: 'none' }} />
+        {/* Fixed Centered Watermark Logo for Print (Centers perfectly on each printed page) */}
+        <div 
+          className="print-watermark-wrapper"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            pointerEvents: 'none', 
+            zIndex: 0 
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/logo-watermark.jpg" 
+            alt="" 
+            loading="eager" 
+            decoding="sync" 
+            style={{ 
+              width: '600px', 
+              maxWidth: '80%', 
+              height: 'auto', 
+              opacity: 0.1, 
+              pointerEvents: 'none' 
+            }} 
+          />
+        </div>
         <div style={{ position: 'relative', zIndex: 1 }}>
         
         {/* Document Header */}

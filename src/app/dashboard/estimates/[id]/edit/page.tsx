@@ -909,8 +909,24 @@ export default function EditEstimatePage() {
       {/* HIDDEN PRINT TEMPLATE */}
       <div id="printable-pdf" className="print-only-block" style={{ background: 'white', padding: '2rem', color: 'black', position: 'relative', width: '100%' }}>
         
-        {/* PAGE 1: PROPOSAL CONTENT WITH CENTERED WATERMARK */}
-        <div className="print-proposal-page" style={{ position: 'relative', width: '100%' }}>
+        {/* Fixed Centered Watermark Logo for Print (Centers perfectly on each printed page) */}
+        <div 
+          className="print-watermark-wrapper"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            pointerEvents: 'none', 
+            zIndex: 0 
+          }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/logo-watermark.jpg" 
@@ -918,19 +934,18 @@ export default function EditEstimatePage() {
             loading="eager"
             decoding="sync"
             style={{ 
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
               width: '550px', 
               maxWidth: '80%', 
               height: 'auto', 
               opacity: 0.08, 
-              pointerEvents: 'none',
-              zIndex: 0
+              pointerEvents: 'none' 
             }} 
           />
-          <div style={{ position: 'relative', zIndex: 1 }}>
+        </div>
+
+        {/* PROPOSAL CONTENT */}
+        <div className="print-proposal-page" style={{ position: 'relative', zIndex: 1, width: '100%' }}>
+          <div>
             <div style={{ borderBottom: '4px solid #111827', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>NJ FENCE & RAILING</h1>
