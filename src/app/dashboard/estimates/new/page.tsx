@@ -854,9 +854,14 @@ export default function NewEstimatePage() {
               </div>
             </div>
 
-            <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem' }}>
+            <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem', lineHeight: '1.5', pageBreakInside: 'avoid' }}>
               <strong>Terms & Conditions:</strong>
-              <p style={{ margin: '0.5rem 0 0 0' }}>This proposal is valid for 30 days.</p>
+              <p style={{ margin: '0.5rem 0 0.35rem 0' }}>
+                1. <strong>Estimate Validity:</strong> This proposal is valid for 30 days from the date of issuance.
+              </p>
+              <p style={{ margin: 0 }}>
+                2. <strong>Deposit Requirement:</strong> A 50% deposit of the total project cost is required to approve the proposal, confirm the project, and begin processing the order.
+              </p>
             </div>
 
             {/* Railing Section Breakdown */}
