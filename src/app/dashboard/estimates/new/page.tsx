@@ -798,6 +798,27 @@ export default function NewEstimatePage() {
           ))}
           <button type="button" onClick={addLineItem} style={{ color: '#2563eb', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer' }}>+ Add Custom Item</button>
         </section>
+
+        {/* Project Description / Custom Instructions & Notes */}
+        <section style={cardStyle}>
+          <h2 style={sectionTitle}>Project Description / Custom Notes &amp; Instructions</h2>
+          <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.8125rem', color: '#6b7280' }}>
+            Write a custom project description, special instructions, or any additional information. If filled in, it will appear cleanly on the proposal PDF.
+          </p>
+          <textarea
+            value={formData.notes}
+            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            placeholder="e.g. Custom installation details, removal instructions, special gate requirements, site notes..."
+            rows={5}
+            style={{
+              ...inputStyle,
+              resize: 'vertical',
+              minHeight: '110px',
+              lineHeight: '1.5',
+              fontFamily: 'inherit',
+            }}
+          />
+        </section>
       </div>
 
       {/* RIGHT COLUMN - STICKY SUMMARY */}
@@ -992,6 +1013,26 @@ export default function NewEstimatePage() {
                 </div>
               </div>
             </div>
+
+            {/* Custom Project Description / Instructions */}
+            {formData.notes && formData.notes.trim() !== "" && (
+              <div style={{ 
+                border: '1px solid #d1d5db', 
+                padding: '1rem', 
+                borderRadius: '4px', 
+                backgroundColor: 'transparent',
+                marginBottom: '1.25rem', 
+                fontSize: '0.875rem', 
+                lineHeight: '1.5',
+                color: '#111827',
+                pageBreakInside: 'avoid' 
+              }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description &amp; Special Instructions:</strong>
+                <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
+                  {formData.notes.trim()}
+                </div>
+              </div>
+            )}
 
             <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem', lineHeight: '1.5', pageBreakInside: 'avoid' }}>
               <strong>Terms & Conditions:</strong>

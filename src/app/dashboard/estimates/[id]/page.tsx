@@ -24,6 +24,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
     return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
   };
 
+  let projectNotes = "";
   let railingImage = "";
   let imagesList: Array<{ id?: string; url: string; label?: string }> = [];
   let railingsList: any[] = [];
@@ -32,6 +33,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
   try {
     if (estimate.description && (estimate.description.startsWith("{") || estimate.description.startsWith("["))) {
       const parsed = JSON.parse(estimate.description);
+      projectNotes = parsed.notes || "";
       railingImage = parsed.railingImage || "";
       if (Array.isArray(parsed.images) && parsed.images.length > 0) {
         imagesList = parsed.images;
@@ -43,8 +45,14 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
       selectedRailing = parsed.selectedRailing || null;
     } else if (estimate.description && estimate.description.startsWith("data:image")) {
       railingImage = estimate.description;
+    } else if (estimate.description) {
+      projectNotes = estimate.description;
     }
-  } catch {}
+  } catch {
+    if (estimate.description && !estimate.description.startsWith("data:image")) {
+      projectNotes = estimate.description;
+    }
+  }
 
   if (imagesList.length === 0 && railingImage) {
     imagesList = [{ id: "1", url: railingImage, label: "Railing Style Reference" }];
@@ -190,6 +198,18 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
               </table>
             </div>
           </div>
+
+          {/* Project Description / Notes Card if present */}
+          {projectNotes && projectNotes.trim() !== "" && (
+            <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                Project Description &amp; Special Instructions
+              </h2>
+              <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', fontSize: '0.9375rem', color: '#374151', lineHeight: '1.6' }}>
+                {projectNotes.trim()}
+              </div>
+            </div>
+          )}
 
           {/* Project Reference Images Card if present */}
           {imagesList && imagesList.length > 0 && (
@@ -340,6 +360,26 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
                 </div>
               </div>
             </div>
+
+            {/* Custom Project Description / Instructions */}
+            {projectNotes && projectNotes.trim() !== "" && (
+              <div style={{ 
+                border: '1px solid #d1d5db', 
+                padding: '1rem', 
+                borderRadius: '4px', 
+                backgroundColor: 'transparent',
+                marginBottom: '1.25rem', 
+                fontSize: '0.875rem', 
+                lineHeight: '1.5',
+                color: '#111827',
+                pageBreakInside: 'avoid' 
+              }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description &amp; Special Instructions:</strong>
+                <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
+                  {projectNotes.trim()}
+                </div>
+              </div>
+            )}
 
             <div style={{ border: '1px solid #d1d5db', padding: '1rem', borderRadius: '4px', marginBottom: railingImage ? '1.25rem' : '2rem', fontSize: '0.875rem', lineHeight: '1.5', pageBreakInside: 'avoid' }}>
               <strong>Terms & Conditions:</strong>
