@@ -203,7 +203,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
           {projectNotes && projectNotes.trim() !== "" && (
             <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                Project Description &amp; Special Instructions
+                Project Description
               </h2>
               <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', fontSize: '0.9375rem', color: '#374151', lineHeight: '1.6' }}>
                 {projectNotes.trim()}
@@ -374,7 +374,7 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
                 color: '#111827',
                 pageBreakInside: 'avoid' 
               }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description &amp; Special Instructions:</strong>
+                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description:</strong>
                 <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
                   {projectNotes.trim()}
                 </div>

@@ -1181,7 +1181,7 @@ export default function EditEstimatePage() {
                 color: '#111827',
                 pageBreakInside: 'avoid' 
               }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description &amp; Special Instructions:</strong>
+                <strong style={{ display: 'block', marginBottom: '0.4rem' }}>Project Description:</strong>
                 <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
                   {formData.notes.trim()}
                 </div>
