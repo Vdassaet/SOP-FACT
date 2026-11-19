@@ -132,7 +132,7 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
           {/* Financial Summary */}
-          <div style={{ backgroundColor: '#f9fafb', color: '#111827', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+          <div style={{ backgroundColor: '#f9fafb', color: '#111827', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Financial Summary</h2>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -161,6 +161,32 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           </div>
 
         </div>
+      </div>
+
+      {/* Print Footer (Thank-You Message) */}
+      <div
+        className="print-only-block"
+        style={{
+          marginTop: '0.25rem',
+          paddingTop: '1rem',
+          borderTop: '1px solid #d1d5db',
+          textAlign: 'center',
+          pageBreakInside: 'avoid',
+          breakInside: 'avoid',
+        }}
+      >
+        <p
+          style={{
+            margin: '0 auto',
+            maxWidth: '640px',
+            fontSize: '0.875rem',
+            lineHeight: '1.6',
+            color: '#4b5563',
+            fontWeight: '400',
+          }}
+        >
+          Thank you for trusting NJ Fence and Railing LLC with your project. We truly appreciate your business and look forward to providing you with quality craftsmanship and excellent service.
+        </p>
       </div>
 
     </div>
