@@ -190,6 +190,78 @@ a {
     display: block !important;
     height: auto !important;
   }
+
+  /* Scoped compact print layout for Invoice PDF */
+  .invoice-print-page .invoice-print-logo-wrap {
+    margin-bottom: 0.75rem !important;
+  }
+  .invoice-print-page .invoice-print-logo {
+    height: 56px !important;
+  }
+  .invoice-print-page .invoice-print-grid > div {
+    margin-bottom: 0.75rem !important;
+  }
+  .invoice-print-page .invoice-print-card {
+    padding: 0.875rem 1rem !important;
+    margin-bottom: 0.75rem !important;
+    box-shadow: none !important;
+  }
+  .invoice-print-page .invoice-print-card:last-child {
+    margin-bottom: 0 !important;
+  }
+  .invoice-print-page .invoice-print-card h2 {
+    font-size: 1rem !important;
+    margin-bottom: 0.625rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  .invoice-print-page .invoice-print-info-grid p {
+    margin-bottom: 0.375rem !important;
+    font-size: 0.8125rem !important;
+    line-height: 1.3 !important;
+  }
+  .invoice-print-page .invoice-print-info-grid p:last-child {
+    margin-bottom: 0 !important;
+  }
+  .invoice-print-page .invoice-print-table thead {
+    display: table-header-group;
+  }
+  .invoice-print-page .invoice-print-table tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .invoice-print-page .invoice-print-table th {
+    padding: 0.375rem 0.5rem !important;
+    font-size: 0.8125rem !important;
+  }
+  .invoice-print-page .invoice-print-table td {
+    padding: 0.375rem 0.5rem !important;
+    font-size: 0.8125rem !important;
+    line-height: 1.3 !important;
+  }
+  .invoice-print-page .invoice-print-table td span {
+    font-size: 0.75rem !important;
+  }
+  .invoice-print-page .invoice-print-summary {
+    padding: 0.875rem 1rem !important;
+    box-shadow: none !important;
+  }
+  .invoice-print-page .invoice-print-summary h2 {
+    font-size: 1rem !important;
+    margin-bottom: 0.625rem !important;
+  }
+  .invoice-print-page .invoice-print-summary-row {
+    margin-bottom: 0.35rem !important;
+    font-size: 0.875rem !important;
+  }
+  .invoice-print-page .invoice-print-summary-total {
+    padding-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 1.0625rem !important;
+  }
+  .invoice-print-page .invoice-print-summary-balance {
+    padding-top: 0.5rem !important;
+    font-size: 1.0625rem !important;
+  }
 }
 
 /* Responsive Utilities */

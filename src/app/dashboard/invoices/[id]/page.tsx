@@ -30,12 +30,12 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
   const balanceDue = Math.max(0, invoice.total - amountPaid);
 
   return (
-    <div className="print-block" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="print-block invoice-print-page" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       
       {/* Print Header (Logo) */}
-      <div className="print-only" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
+      <div className="print-only invoice-print-logo-wrap" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="NJ Fence Logo" loading="eager" decoding="sync" style={{ height: '80px', objectFit: 'contain' }} />
+        <img src="/logo.svg" alt="NJ Fence Logo" loading="eager" decoding="sync" className="invoice-print-logo" style={{ height: '80px', objectFit: 'contain' }} />
       </div>
 
       {/* Header Actions */}
@@ -67,15 +67,15 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
       </div>
 
       {/* Main Grid */}
-      <div className="grid-responsive-2-1 print-block" style={{ gap: '2rem' }}>
+      <div className="grid-responsive-2-1 print-block invoice-print-grid" style={{ gap: '2rem' }}>
         
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
           {/* Info Card */}
-          <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+          <div className="invoice-print-card" style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Customer Information</h2>
-            <div className="grid-responsive print-two-col" style={{ gap: '1rem' }}>
+            <div className="grid-responsive print-two-col invoice-print-info-grid" style={{ gap: '1rem' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Customer</p>
                 <p style={{ margin: '0.25rem 0 1rem 0' }}>{invoice.customer?.name} {invoice.customer?.company ? `(${invoice.customer.company})` : ''}</p>
@@ -101,10 +101,10 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           </div>
 
           {/* Items Card */}
-          <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+          <div className="invoice-print-card" style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Line Items</h2>
             <div className="table-responsive">
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table className="invoice-print-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
                   <th style={{ textAlign: 'left', padding: '0.5rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>Item / Description</th>
@@ -139,29 +139,29 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
           {/* Financial Summary */}
-          <div style={{ backgroundColor: '#f9fafb', color: '#111827', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
+          <div className="invoice-print-summary" style={{ backgroundColor: '#f9fafb', color: '#111827', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb', pageBreakInside: 'avoid', breakInside: 'avoid' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Financial Summary</h2>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <div className="invoice-print-summary-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
               <span style={{ color: '#4b5563' }}>Subtotal:</span>
               <span style={{ fontWeight: '500' }}>{formatCurrency(invoice.subtotal)}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <div className="invoice-print-summary-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
               <span style={{ color: '#4b5563' }}>Tax:</span>
               <span style={{ fontWeight: '500' }}>{formatCurrency(invoice.tax)}</span>
             </div>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', borderTop: '2px solid #e5e7eb', paddingTop: '1rem', marginBottom: '1rem' }}>
+            <div className="invoice-print-summary-total" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', borderTop: '2px solid #e5e7eb', paddingTop: '1rem', marginBottom: '1rem' }}>
               <span>Total:</span>
               <span>{formatCurrency(invoice.total)}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <div className="invoice-print-summary-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
               <span style={{ color: '#4b5563' }}>Deposit / Paid:</span>
               <span style={{ color: '#166534', fontWeight: '500' }}>-{formatCurrency(amountPaid)}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', borderTop: '2px solid #e5e7eb', paddingTop: '1rem' }}>
+            <div className="invoice-print-summary-balance" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', borderTop: '2px solid #e5e7eb', paddingTop: '1rem' }}>
               <span>Balance Due:</span>
               <span>{formatCurrency(balanceDue)}</span>
             </div>
@@ -170,12 +170,33 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
         </div>
       </div>
 
+      {/* Print Payment Terms */}
+      <div
+        className="print-only-block"
+        style={{
+          marginTop: '0.625rem',
+          padding: '0.625rem 0.875rem',
+          backgroundColor: '#f9fafb',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          pageBreakInside: 'avoid',
+          breakInside: 'avoid',
+        }}
+      >
+        <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.8125rem', fontWeight: '700', color: '#111827' }}>
+          Payment Terms
+        </p>
+        <p style={{ margin: 0, fontSize: '0.75rem', lineHeight: '1.45', color: '#4b5563' }}>
+          A 50% deposit is required to confirm the project and begin fabrication. The remaining balance is due within 21 days after project completion, unless otherwise agreed upon in writing.
+        </p>
+      </div>
+
       {/* Print Footer (Thank-You Message) */}
       <div
         className="print-only-block"
         style={{
-          marginTop: '0.25rem',
-          paddingTop: '1rem',
+          marginTop: '0.625rem',
+          paddingTop: '0.625rem',
           borderTop: '1px solid #d1d5db',
           textAlign: 'center',
           pageBreakInside: 'avoid',
@@ -186,8 +207,8 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
           style={{
             margin: '0 auto',
             maxWidth: '640px',
-            fontSize: '0.875rem',
-            lineHeight: '1.6',
+            fontSize: '0.8125rem',
+            lineHeight: '1.45',
             color: '#4b5563',
             fontWeight: '400',
           }}
