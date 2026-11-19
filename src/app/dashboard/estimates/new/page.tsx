@@ -959,7 +959,12 @@ export default function NewEstimatePage() {
                 <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
                 {(() => {
                   const c = customers.find(c => c.id === formData.customerId);
-                  return <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>;
+                  return (
+                    <>
+                      <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>
+                      {c?.email && c.email.trim() !== '' && <p style={{ margin: 0 }}>Email: {c.email}</p>}
+                    </>
+                  );
                 })()}
                 <p style={{ margin: 0 }}>Project Location: {formData.installAddress || 'N/A'}</p>
               </div>

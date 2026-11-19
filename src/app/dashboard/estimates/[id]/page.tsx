@@ -130,6 +130,13 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
                 
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Phone</p>
                 <p style={{ margin: '0.25rem 0 1rem 0' }}>{estimate.customer?.phone || 'N/A'}</p>
+
+                {estimate.customer?.email && estimate.customer.email.trim() !== '' && (
+                  <>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Email</p>
+                    <p style={{ margin: '0.25rem 0 0 0' }}>{estimate.customer.email}</p>
+                  </>
+                )}
               </div>
               <div>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Installation Address</p>
@@ -308,6 +315,9 @@ export default async function EstimateDetailPage(props: { params: Promise<{ id: 
               <div style={{ flex: 1 }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
                 <p style={{ margin: 0 }}>Customer: {estimate.customer ? `${estimate.customer.name} ${estimate.customer.company ? `(${estimate.customer.company})` : ''}` : 'N/A'}</p>
+                {estimate.customer?.email && estimate.customer.email.trim() !== '' && (
+                  <p style={{ margin: 0 }}>Email: {estimate.customer.email}</p>
+                )}
                 <p style={{ margin: 0 }}>Project Location: {estimate.installAddress || estimate.customer?.address || 'N/A'}</p>
               </div>
               <div style={{ flex: 1 }}>

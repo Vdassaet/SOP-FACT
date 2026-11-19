@@ -1113,7 +1113,12 @@ export default function EditEstimatePage() {
                 <h3 style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Prepared For:</h3>
                 {(() => {
                   const c = customers.find(c => c.id === formData.customerId) || (loadedCustomer?.id === formData.customerId ? loadedCustomer : loadedCustomer);
-                  return <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>;
+                  return (
+                    <>
+                      <p style={{ margin: 0 }}>Customer: {c ? `${c.name} ${c.company ? `(${c.company})` : ''}` : 'N/A'}</p>
+                      {c?.email && c.email.trim() !== '' && <p style={{ margin: 0 }}>Email: {c.email}</p>}
+                    </>
+                  );
                 })()}
                 <p style={{ margin: 0 }}>Project Location: {formData.installAddress || loadedCustomer?.address || 'N/A'}</p>
               </div>

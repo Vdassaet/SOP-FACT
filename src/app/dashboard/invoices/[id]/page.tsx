@@ -82,6 +82,13 @@ export default async function InvoiceDetailPage(props: { params: Promise<{ id: s
                 
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Phone</p>
                 <p style={{ margin: '0.25rem 0 1rem 0' }}>{invoice.customer?.phone || 'N/A'}</p>
+
+                {invoice.customer?.email && invoice.customer.email.trim() !== '' && (
+                  <>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Email</p>
+                    <p style={{ margin: '0.25rem 0 0 0' }}>{invoice.customer.email}</p>
+                  </>
+                )}
               </div>
               <div>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 'bold', textTransform: 'uppercase' }}>Date Issued</p>
