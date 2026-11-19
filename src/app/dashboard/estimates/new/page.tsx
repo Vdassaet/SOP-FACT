@@ -792,7 +792,7 @@ export default function NewEstimatePage() {
             <div key={i} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
               <input type="text" value={item.name} onChange={(e) => updateLineItem(i, 'name', e.target.value)} placeholder="Item" style={{...inputStyle, flex: 2}} />
               <input type="number" step="any" value={item.quantity} onChange={(e) => updateLineItem(i, 'quantity', e.target.value)} placeholder="Qty (FT)" style={{...inputStyle, width: '80px'}} />
-              <input type="number" step="0.01" value={item.unitPrice} onChange={(e) => updateLineItem(i, 'unitPrice', e.target.value)} placeholder="Price" style={{...inputStyle, width: '100px'}} />
+              <input type="number" step="any" value={item.unitPrice} onChange={(e) => updateLineItem(i, 'unitPrice', e.target.value)} placeholder="Price" style={{...inputStyle, width: '100px'}} />
               <button type="button" onClick={() => removeLineItem(i)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>✖</button>
             </div>
           ))}

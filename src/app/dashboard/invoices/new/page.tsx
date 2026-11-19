@@ -250,7 +250,7 @@ export default function NewInvoicePage() {
                   <input type="number" min="0" step="any" required value={item.quantity} onChange={(e) => handleItemChange(index, 'quantity', parseFloat(e.target.value) || 0)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', textAlign: 'center' }} />
                 </td>
                 <td style={{ padding: '0.75rem' }}>
-                  <input type="number" min="0" step="0.01" required value={item.unitPrice} onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', textAlign: 'right' }} />
+                  <input type="number" min="0" step="any" required value={item.unitPrice} onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', textAlign: 'right' }} />
                 </td>
                 <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '500' }}>
                   ${(item.quantity * item.unitPrice).toFixed(2)}
@@ -278,7 +278,7 @@ export default function NewInvoicePage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
               <span style={{ color: '#4b5563' }}>Tax Rate (%):</span>
-              <input type="number" step="0.001" value={taxRate} onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)} style={{ width: '80px', padding: '0.25rem', textAlign: 'right', border: '1px solid #d1d5db', borderRadius: '4px' }} />
+              <input type="number" step="any" value={taxRate} onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)} style={{ width: '80px', padding: '0.25rem', textAlign: 'right', border: '1px solid #d1d5db', borderRadius: '4px' }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
               <span style={{ color: '#4b5563' }}>Tax:</span>
@@ -312,7 +312,7 @@ export default function NewInvoicePage() {
                   <span style={{ marginRight: '0.25rem' }}>$</span>
                   <input 
                     type="number" 
-                    step="0.01" 
+                    step="any" 
                     min="0"
                     max={total}
                     value={depositAmount} 
